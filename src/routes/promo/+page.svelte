@@ -45,6 +45,9 @@
       </p>
     </div>
   </div>
+  <footer class="promo-footer">
+    <a href="/about">What is Retailfluencer?</a>
+  </footer>
 </div>
 
 <style>
@@ -170,5 +173,24 @@
     font-size: 0.75rem;
     color: #6b7280;
     margin: 0;
+  }
+
+  .promo-footer {
+    position: absolute;
+    bottom: 2rem;
+    left: 0;
+    width: 100%;
+    text-align: center;
+  }
+
+  .promo-footer a {
+    color: rgba(255, 255, 255, 0.3);
+    font-size: 0.875rem;
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .promo-footer a:hover {
+    color: rgba(255, 255, 255, 0.6);
   }
 </style>

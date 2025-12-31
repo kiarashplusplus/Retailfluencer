@@ -30,6 +30,7 @@
     class="btn btn--{variant} btn--{size}"
     class:btn--full={fullWidth}
     class:btn--loading={loading}
+    aria-disabled={disabled}
     {...restProps}
   >
     {#if loading}

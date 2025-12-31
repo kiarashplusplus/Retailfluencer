@@ -112,6 +112,9 @@
       </div>
     </div>
   </div>
+  <footer class="login-footer">
+    <a href="/about">About Retailfluencer</a>
+  </footer>
 </div>
 
 <style>
@@ -407,6 +410,34 @@
 
     .login-container {
       padding: 2rem 1.5rem;
+    }
+  }
+
+  .login-footer {
+    position: absolute;
+    bottom: 1.5rem;
+    left: 0;
+    width: 50%; /* Left half of screen */
+    text-align: center;
+  }
+
+  .login-footer a {
+    color: #4b5563;
+    font-size: 0.875rem;
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .login-footer a:hover {
+    color: #9ca3af;
+  }
+
+  @media (max-width: 768px) {
+    .login-footer {
+      width: 100%;
+      position: relative;
+      bottom: auto;
+      margin-top: 2rem;
     }
   }
 </style>
