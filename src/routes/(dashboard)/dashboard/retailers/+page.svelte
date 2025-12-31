@@ -168,7 +168,7 @@
                   <span class="stat-label">Campaigns</span>
                 </div>
                 <div class="stat">
-                  <span class="stat-value">--</span>
+                  <span class="stat-value">{retailer._count?.redemptions || 0}</span>
                   <span class="stat-label">Redemptions</span>
                 </div>
               </div>

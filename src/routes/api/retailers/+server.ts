@@ -7,6 +7,13 @@ export const GET: RequestHandler = async () => {
     const retailers = await db.retailer.findMany({
         orderBy: { name: 'asc' },
         include: {
+            campaigns: {
+                select: {
+                    _count: {
+                        select: { redemptions: true }
+                    }
+                }
+            },
             _count: {
                 select: {
                     campaigns: true
@@ -15,7 +22,16 @@ export const GET: RequestHandler = async () => {
         }
     });
 
-    return json(retailers);
+    // Calculate total redemptions manually as Prisma doesn't support nested aggregation counts directly in findMany
+    const transformedRetailers = retailers.map(r => ({
+        ...r,
+        _count: {
+            ...r._count,
+            redemptions: r.campaigns.reduce((sum, c) => sum + c._count.redemptions, 0)
+        }
+    }));
+
+    return json(transformedRetailers);
 };
 
 // POST /api/retailers - Create a new retailer
