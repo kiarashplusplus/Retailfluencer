@@ -21,7 +21,9 @@
   let isLoading = $state(true);
   let showModal = $state(false);
   let searchQuery = $state('');
+
   let isSubmitting = $state(false);
+  let editingId = $state<string | null>(null);
 
   // Form state
   let formData = $state({
@@ -57,8 +59,11 @@
   async function handleSubmit() {
     isSubmitting = true;
     try {
-      const res = await fetch('/api/products', {
-        method: 'POST',
+      const url = editingId ? `/api/products/${editingId}` : '/api/products';
+      const method = editingId ? 'PATCH' : 'POST';
+
+      const res = await fetch(url, {
+        method,
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           brandId: $user?.brandId,
@@ -72,16 +77,52 @@
       });
 
       if (res.ok) {
-        const newProduct = await res.json();
-        products = [newProduct, ...products];
+        const savedProduct = await res.json();
+        if (editingId) {
+          products = products.map(p => p.id === editingId ? savedProduct : p);
+        } else {
+          products = [savedProduct, ...products];
+        }
         showModal = false;
         resetForm();
       }
     } catch (error) {
-      console.error('Failed to create product:', error);
+      console.error('Failed to save product:', error);
     } finally {
       isSubmitting = false;
     }
+  }
+
+  async function handleDelete(id: string) {
+    if (!confirm('Are you sure you want to delete this product?')) return;
+    
+    try {
+      const res = await fetch(`/api/products/${id}`, { method: 'DELETE' });
+      if (res.ok) {
+        products = products.filter(p => p.id !== id);
+      }
+    } catch (error) {
+      console.error('Failed to delete product:', error);
+    }
+  }
+
+  function openCreateModal() {
+    resetForm();
+    editingId = null;
+    showModal = true;
+  }
+
+  function openEditModal(product: Product) {
+    formData = {
+      name: product.name,
+      sku: product.sku || '',
+      gtin: product.gtin || '',
+      retailPrice: product.retailPrice?.toString() || '',
+      cogs: product.cogs?.toString() || '',
+      imageUrl: product.imageUrl || ''
+    };
+    editingId = product.id;
+    showModal = true;
   }
 
   function resetForm() {
@@ -102,7 +143,8 @@
       <h1>Products</h1>
       <p>Manage your product catalog for campaigns</p>
     </div>
-    <Button icon="+" onclick={() => showModal = true}>Add Product</Button>
+
+    <Button icon="+" onclick={openCreateModal}>Add Product</Button>
   </header>
 
   <div class="toolbar">
@@ -140,7 +182,7 @@
         title={searchQuery ? 'No products found' : 'No products yet'}
         description={searchQuery ? 'Try a different search term' : 'Add your first product to start creating campaigns'}
         actionLabel={searchQuery ? undefined : 'Add Product'}
-        onaction={() => showModal = true}
+        onaction={openCreateModal}
       />
     </Card>
   {:else}
@@ -169,8 +211,8 @@
                 </div>
               </div>
               <div class="product-actions">
-                <button class="action-btn">Edit</button>
-                <button class="action-btn action-btn--danger">Delete</button>
+                <button class="action-btn" onclick={() => openEditModal(product)}>Edit</button>
+                <button class="action-btn action-btn--danger" onclick={() => handleDelete(product.id)}>Delete</button>
               </div>
             </div>
           </Card>
@@ -180,7 +222,9 @@
   {/if}
 </div>
 
-<Modal bind:open={showModal} title="Add New Product" size="md">
+
+
+<Modal bind:open={showModal} title={editingId ? 'Edit Product' : 'Add New Product'} size="md">
   <form class="form" onsubmit={(e) => { e.preventDefault(); handleSubmit(); }}>
     <Input 
       label="Product Name" 
@@ -228,7 +272,7 @@
 
   {#snippet footer()}
     <Button variant="secondary" onclick={() => showModal = false}>Cancel</Button>
-    <Button loading={isSubmitting} onclick={handleSubmit}>Create Product</Button>
+    <Button loading={isSubmitting} onclick={handleSubmit}>{editingId ? 'Save Changes' : 'Create Product'}</Button>
   {/snippet}
 </Modal>
 
