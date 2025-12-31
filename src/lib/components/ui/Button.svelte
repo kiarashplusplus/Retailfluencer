@@ -25,27 +25,50 @@
   }: Props = $props();
 </script>
 
-<button
-  class="btn btn--{variant} btn--{size}"
-  class:btn--full={fullWidth}
-  class:btn--loading={loading}
-  disabled={disabled || loading}
-  {...restProps}
->
-  {#if loading}
-    <span class="spinner"></span>
-  {:else if icon && iconPosition === 'left'}
-    <span class="btn-icon">{icon}</span>
-  {/if}
-  
-  <span class="btn-text">
-    {@render children()}
-  </span>
-  
-  {#if !loading && icon && iconPosition === 'right'}
-    <span class="btn-icon">{icon}</span>
-  {/if}
-</button>
+{#if restProps.href}
+  <a
+    class="btn btn--{variant} btn--{size}"
+    class:btn--full={fullWidth}
+    class:btn--loading={loading}
+    {...restProps}
+  >
+    {#if loading}
+      <span class="spinner"></span>
+    {:else if icon && iconPosition === 'left'}
+      <span class="btn-icon">{icon}</span>
+    {/if}
+    
+    <span class="btn-text">
+      {@render children()}
+    </span>
+    
+    {#if !loading && icon && iconPosition === 'right'}
+      <span class="btn-icon">{icon}</span>
+    {/if}
+  </a>
+{:else}
+  <button
+    class="btn btn--{variant} btn--{size}"
+    class:btn--full={fullWidth}
+    class:btn--loading={loading}
+    disabled={disabled || loading}
+    {...restProps}
+  >
+    {#if loading}
+      <span class="spinner"></span>
+    {:else if icon && iconPosition === 'left'}
+      <span class="btn-icon">{icon}</span>
+    {/if}
+    
+    <span class="btn-text">
+      {@render children()}
+    </span>
+    
+    {#if !loading && icon && iconPosition === 'right'}
+      <span class="btn-icon">{icon}</span>
+    {/if}
+  </button>
+{/if}
 
 <style>
   .btn {
@@ -138,9 +161,11 @@
     width: 100%;
   }
 
-  .btn:disabled {
+  .btn:disabled,
+  .btn[aria-disabled="true"] {
     opacity: 0.5;
     cursor: not-allowed;
+    pointer-events: none;
   }
 
   .btn--loading {

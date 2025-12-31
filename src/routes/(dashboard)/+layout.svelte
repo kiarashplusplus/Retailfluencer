@@ -24,6 +24,7 @@
     { href: '/dashboard/retailers', label: 'Retailers', icon: '◆' },
     { href: '/dashboard/campaigns', label: 'Campaigns', icon: '▣' },
     { href: '/dashboard/influencers', label: 'Influencers', icon: '★' },
+    { href: '/dashboard/customers', label: 'Customers', icon: '👥' },
     { href: '/dashboard/automations', label: 'Automations', icon: '⚡' },
     { href: '/dashboard/affiliates', label: 'Affiliates', icon: '🤝' },
     { href: '/dashboard/analytics', label: 'Analytics', icon: '◉' },
