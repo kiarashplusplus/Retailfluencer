@@ -2,6 +2,7 @@ import { json, error } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import { db } from '$lib/server/db';
 import { getCouponByGs1 } from '$lib/services/coupon-assignment';
+import { triggerAutomations } from '$lib/services/automation';
 
 // POST /api/customers/capture - Capture customer email during coupon view
 export const POST: RequestHandler = async ({ request }) => {
@@ -26,6 +27,8 @@ export const POST: RequestHandler = async ({ request }) => {
         }
     });
 
+    let isNewCustomer = false;
+
     if (!customer) {
         // Create new customer
         customer = await db.customer.create({
@@ -35,16 +38,22 @@ export const POST: RequestHandler = async ({ request }) => {
                 phone: data.phone
             }
         });
+        isNewCustomer = true;
+    }
 
-        // TODO: Trigger automation when Phase 2 is implemented
-        // await triggerAutomations('customer_created', {
-        //   customerId: customer.id,
-        //   brandId: coupon.campaign.brandId,
-        // });
+    // Trigger automation for new customers
+    if (isNewCustomer) {
+        await triggerAutomations('customer_created', {
+            brandId: coupon.campaign.brandId,
+            customerId: customer.id,
+            email: data.email,
+        });
     }
 
     return json({
         success: true,
-        customerId: customer.id
+        customerId: customer.id,
+        isNewCustomer
     });
 };
+

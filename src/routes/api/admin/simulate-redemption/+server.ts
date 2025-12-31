@@ -3,6 +3,7 @@ import type { RequestHandler } from './$types';
 import { db } from '$lib/server/db';
 import { env } from '$env/dynamic/private';
 import { simulateRedemptionSchema, validateOrThrow } from '$lib/schemas';
+import { triggerAutomations } from '$lib/services/automation';
 
 /**
  * POST /api/admin/simulate-redemption
@@ -77,12 +78,13 @@ export const POST: RequestHandler = async ({ request }) => {
         return newRedemption;
     });
 
-    // TODO: Trigger automations when Phase 2 is implemented
-    // await triggerAutomations('coupon_redeemed', {
-    //   redemptionId: redemption.id,
-    //   campaignId: assignment.campaignId,
-    //   influencerId: assignment.influencerId,
-    // });
+    // Trigger automation for coupon redemptions
+    await triggerAutomations('coupon_redeemed', {
+        brandId: assignment.campaign.brandId,
+        redemptionId: redemption.id,
+        campaignId: assignment.campaignId,
+        influencerId: assignment.influencerId,
+    });
 
     return json({
         success: true,
@@ -90,3 +92,4 @@ export const POST: RequestHandler = async ({ request }) => {
         message: 'Redemption simulated successfully'
     });
 };
+
