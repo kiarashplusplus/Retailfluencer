@@ -195,13 +195,6 @@
     border: 1px solid rgba(255, 255, 255, 0.1);
   }
 
-  .step.highlight {
-    background: rgba(16, 185, 129, 0.15);
-    border-color: rgba(16, 185, 129, 0.4);
-    color: #34d399; /* Emerald 400 - brighter */
-    box-shadow: 0 0 15px rgba(16, 185, 129, 0.15);
-  }
-
   .text-block {
     flex: 1;
   }
