@@ -5,7 +5,14 @@ import { db } from '$lib/server/db';
 // GET /api/retailers - List all retailers
 export const GET: RequestHandler = async () => {
     const retailers = await db.retailer.findMany({
-        orderBy: { name: 'asc' }
+        orderBy: { name: 'asc' },
+        include: {
+            _count: {
+                select: {
+                    campaigns: true
+                }
+            }
+        }
     });
 
     return json(retailers);

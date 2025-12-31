@@ -35,16 +35,30 @@ async function main() {
 
     // 2. Create Retailers
     const retailers = [
-        { name: 'Target', slug: 'target', logoUrl: 'https://upload.wikimedia.org/wikipedia/commons/9/9a/Target_logo.svg' },
-        { name: 'Walmart', slug: 'walmart', logoUrl: 'https://upload.wikimedia.org/wikipedia/commons/c/ca/Walmart_logo.svg' },
-        { name: 'Whole Foods', slug: 'whole-foods', logoUrl: 'https://upload.wikimedia.org/wikipedia/commons/a/a2/Whole_Foods_Market_201x_logo.svg' }
+        { name: 'Target', slug: 'target', logoUrl: '/images/retailers/target.png' },
+        { name: 'Walmart', slug: 'walmart', logoUrl: '/images/retailers/walmart.png' },
+        { name: 'Whole Foods Market', slug: 'whole-foods', logoUrl: '/images/retailers/whole-foods.png' },
+        { name: 'The Fresh Market', slug: 'the-fresh-market', logoUrl: '/images/retailers/fresh-market.png' },
+        { name: 'Green Earth Grocers', slug: 'green-earth', logoUrl: '/images/retailers/green-earth.png' },
+        { name: 'City Market', slug: 'city-market', logoUrl: '/images/retailers/city-market.png' }
     ];
 
     for (const r of retailers) {
         const exists = await prisma.retailer.findUnique({ where: { slug: r.slug } });
         if (!exists) {
-            await prisma.retailer.create({ data: r });
+            await prisma.retailer.create({
+                data: {
+                    ...r,
+                    supports8112: true // added default
+                }
+            });
             console.log('Created Retailer:', r.name);
+        } else {
+            // Update logo if exists
+            await prisma.retailer.update({
+                where: { slug: r.slug },
+                data: { logoUrl: r.logoUrl }
+            });
         }
     }
     console.log('Retailers ensured');
@@ -121,11 +135,25 @@ async function main() {
     for (const c of campaigns) {
         let camp = await prisma.campaign.findFirst({ where: { name: c.name, brandId: brand.id } });
         if (!camp) {
+            // Link to specific retailers
+            let retailerId = null;
+            if (c.name === 'Summer Hydration') {
+                const r = await prisma.retailer.findUnique({ where: { slug: 'whole-foods' } });
+                retailerId = r?.id;
+            } else if (c.name === 'Back to School Snack') {
+                const r = await prisma.retailer.findUnique({ where: { slug: 'target' } });
+                retailerId = r?.id;
+            } else if (c.name === 'Morning Routine') {
+                const r = await prisma.retailer.findUnique({ where: { slug: 'the-fresh-market' } });
+                retailerId = r?.id;
+            }
+
             camp = await prisma.campaign.create({
                 data: {
                     name: c.name,
                     brandId: brand.id,
                     productId: dbProducts[c.productIdx].id,
+                    retailerId: retailerId, // Linked here
                     discountType: c.discountType,
                     discountValue: c.discountValue,
                     campaignStart: new Date(),
@@ -134,7 +162,7 @@ async function main() {
                     totalCirculation: 1000
                 }
             });
-            console.log('Created Campaign:', camp.name);
+            console.log('Created Campaign:', camp.name, retailerId ? '(Linked to Retailer)' : '');
 
             // Assign to random influencers
             const assignedInfluencers = dbInfluencers.sort(() => 0.5 - Math.random()).slice(0, 2);
