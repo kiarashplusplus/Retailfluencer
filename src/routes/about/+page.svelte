@@ -49,7 +49,7 @@
       <div class="arrow">↓</div>
       <div class="step">Customer Redeems</div>
       <div class="arrow">↓</div>
-      <div class="step highlight">Sale Attributed</div>
+      <div class="step">Sale Attributed</div>
       <div class="arrow">↓</div>
       <div class="step">Automated Growth</div>
     </div>
