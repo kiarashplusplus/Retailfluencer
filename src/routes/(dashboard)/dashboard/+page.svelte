@@ -55,7 +55,7 @@
       <p>Here's what's happening with your campaigns</p>
     </div>
     <div class="header-actions">
-      <a href="/dashboard/campaigns/new" class="btn-primary">
+      <a href="/dashboard/campaigns?action=new" class="btn-primary">
         + New Campaign
       </a>
     </div>
@@ -85,15 +85,15 @@
     <section class="card">
       <h2>Quick Actions</h2>
       <div class="quick-actions">
-        <a href="/dashboard/products/new" class="action-card">
+        <a href="/dashboard/products?action=new" class="action-card">
           <span class="action-icon">◇</span>
           <span class="action-label">Add Product</span>
         </a>
-        <a href="/dashboard/influencers/new" class="action-card">
+        <a href="/dashboard/influencers?action=new" class="action-card">
           <span class="action-icon">★</span>
           <span class="action-label">Add Influencer</span>
         </a>
-        <a href="/dashboard/campaigns/new" class="action-card">
+        <a href="/dashboard/campaigns?action=new" class="action-card">
           <span class="action-icon">▣</span>
           <span class="action-label">Create Campaign</span>
         </a>

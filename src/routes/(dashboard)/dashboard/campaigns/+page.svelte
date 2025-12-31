@@ -2,6 +2,7 @@
   import { onMount } from 'svelte';
   import { fly, fade } from 'svelte/transition';
   import { Card, Button, Input, Modal, Badge, EmptyState } from '$lib/components/ui';
+  import { page } from '$app/stores';
   import { user } from '$lib/stores/auth';
 
   interface Campaign {
@@ -26,6 +27,9 @@
   let statusFilter = $state<string>('all');
 
   onMount(async () => {
+    if ($page.url.searchParams.get('action') === 'new') {
+      showModal = true;
+    }
     await fetchCampaigns();
   });
 
