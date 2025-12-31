@@ -9,6 +9,7 @@
     icon?: string;
     iconPosition?: 'left' | 'right';
     fullWidth?: boolean;
+    href?: string;
     children: Snippet;
   }
 

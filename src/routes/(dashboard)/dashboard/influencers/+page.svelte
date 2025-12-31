@@ -16,6 +16,12 @@
     _count?: { couponAssignments: number; redemptions: number };
   }
 
+  interface Campaign {
+    id: string;
+    name: string;
+    product?: { name: string };
+  }
+
   let influencers = $state<Influencer[]>([]);
   let isLoading = $state(true);
   let showModal = $state(false);
@@ -29,12 +35,33 @@
     tiktokHandle: ''
   });
 
+  // Assignment state
+  let campaigns = $state<Campaign[]>([]);
+  let showAssignModal = $state(false);
+  let assignData = $state({
+    influencerId: '',
+    campaignId: ''
+  });
+
   onMount(async () => {
     if ($page.url.searchParams.get('action') === 'new') {
       showModal = true;
     }
     await fetchInfluencers();
+    await fetchCampaigns();
   });
+
+  async function fetchCampaigns() {
+    try {
+      const brandId = $user?.brandId;
+      const res = await fetch(`/api/campaigns?brandId=${brandId}`);
+      if (res.ok) {
+        campaigns = await res.json();
+      }
+    } catch (error) {
+      console.error('Failed to fetch campaigns:', error);
+    }
+  }
 
   async function fetchInfluencers() {
     try {
@@ -76,6 +103,48 @@
     } finally {
       isSubmitting = false;
     }
+  }
+
+  async function handleAssign() {
+    isSubmitting = true;
+    try {
+      const res = await fetch('/api/assignments', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          brandId: $user?.brandId,
+          influencerId: assignData.influencerId,
+          campaignId: assignData.campaignId
+        })
+      });
+
+      if (res.ok) {
+        const assignment = await res.json();
+        // Update local state to reflect new count
+        const idx = influencers.findIndex(i => i.id === assignData.influencerId);
+        if (idx !== -1) {
+          if (!influencers[idx]._count) influencers[idx]._count = { couponAssignments: 0, redemptions: 0 };
+          influencers[idx]._count!.couponAssignments++;
+        }
+        showAssignModal = false;
+        assignData = { influencerId: '', campaignId: '' };
+      } else {
+        const err = await res.json();
+        alert(err.message || 'Failed to assign coupon');
+      }
+    } catch (error) {
+      console.error('Failed to assign coupon:', error);
+    } finally {
+      isSubmitting = false;
+    }
+  }
+
+  function openAssignModal(influencerId: string) {
+    assignData.influencerId = influencerId;
+    if (campaigns.length > 0) {
+      assignData.campaignId = campaigns[0].id; // Default to first
+    }
+    showAssignModal = true;
   }
 
   function resetForm() {
@@ -156,8 +225,8 @@
   {:else}
     <div class="influencer-grid">
       {#each filteredInfluencers as influencer, i}
-        <div in:fly={{ y: 20, delay: i * 40, duration: 300 }}>
-          <Card hover>
+        <div class="grid-item" in:fly={{ y: 20, delay: i * 40, duration: 300 }}>
+          <Card hover class="h-full">
             <div class="influencer-card">
               <div class="influencer-avatar" style="background: {getAvatarColor(influencer.name)}">
                 {getInitials(influencer.name)}
@@ -192,7 +261,7 @@
               </div>
 
               <div class="influencer-actions">
-                <button class="action-btn primary">Assign Coupon</button>
+                <button class="action-btn primary" onclick={() => openAssignModal(influencer.id)}>Assign Coupon</button>
                 <button class="action-btn">View</button>
               </div>
             </div>
@@ -237,6 +306,32 @@
   {#snippet footer()}
     <Button variant="secondary" onclick={() => showModal = false}>Cancel</Button>
     <Button loading={isSubmitting} onclick={handleSubmit}>Add Influencer</Button>
+  {/snippet}
+</Modal>
+
+<Modal bind:open={showAssignModal} title="Assign Coupon" size="sm">
+  <div class="form">
+    <p style="color: #9ca3af; margin-bottom: 1rem;">
+      Select a campaign to generate a unique tracking coupon for this influencer.
+    </p>
+
+    <div class="form-group">
+      <label for="campaign-select" style="display: block; color: #d1d5db; font-size: 0.875rem; margin-bottom: 0.5rem;">Select Campaign</label>
+      <select 
+        id="campaign-select"
+        bind:value={assignData.campaignId}
+        style="width: 100%; padding: 0.75rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 0.5rem; color: #fff;"
+      >
+        {#each campaigns as campaign}
+          <option value={campaign.id}>{campaign.name}</option>
+        {/each}
+      </select>
+    </div>
+  </div>
+
+  {#snippet footer()}
+    <Button variant="secondary" onclick={() => showAssignModal = false}>Cancel</Button>
+    <Button loading={isSubmitting} onclick={handleAssign}>Assign Coupon</Button>
   {/snippet}
 </Modal>
 
@@ -466,6 +561,32 @@
   .skeleton-name { height: 20px; width: 60%; border-radius: 0.5rem; }
   .skeleton-handle { height: 14px; width: 40%; border-radius: 0.5rem; }
   .skeleton-stats { height: 40px; width: 100%; border-radius: 0.5rem; margin-top: 0.5rem; }
+
+  /* Equal height cards */
+  .grid-item {
+    height: 100%;
+  }
+
+  :global(.h-full) {
+    height: 100%;
+  }
+
+  .influencer-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 0.75rem;
+    height: 100%;
+  }
+
+  .influencer-actions {
+    display: flex;
+    gap: 0.5rem;
+    width: 100%;
+    margin-top: auto; /* Push to bottom */
+    padding-top: 1rem;
+  }
 
   @keyframes shimmer {
     0% { background-position: 200% 0; }
