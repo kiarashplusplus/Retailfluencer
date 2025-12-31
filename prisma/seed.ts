@@ -57,7 +57,7 @@ async function main() {
             cogs: 1.50,
             sku: 'KOM-GIN-001',
             gtin: '00850012345678', // Added mock GTIN
-            imageUrl: 'https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&q=80&w=600'
+            imageUrl: '/images/products/kombucha.png'
         },
         {
             name: 'Plant Protein Bar (Chocolate)',
@@ -65,7 +65,7 @@ async function main() {
             cogs: 0.80,
             sku: 'PRO-CHO-001',
             gtin: '00850012345999',
-            imageUrl: 'https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&q=80&w=600'
+            imageUrl: '/images/products/protein-bar.png'
         },
         {
             name: 'Oat Milk (Barista Edition)',
@@ -73,7 +73,7 @@ async function main() {
             cogs: 2.10,
             sku: 'OAT-BAR-001',
             gtin: '00850012345888',
-            imageUrl: 'https://images.unsplash.com/photo-1601426359049-7c8702c2e99d?auto=format&fit=crop&q=80&w=600'
+            imageUrl: '/images/products/oat-milk.png'
         }
     ];
 
