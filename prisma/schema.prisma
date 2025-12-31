@@ -1,0 +1,199 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// Core entities
+model Brand {
+  id          String   @id @default(uuid())
+  name        String
+  slug        String   @unique
+  logoUrl     String?
+  tcbFunderId String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  products    Product[]
+  campaigns   Campaign[]
+  influencers Influencer[]
+  customers   Customer[]
+  automations Automation[]
+}
+
+model Product {
+  id          String   @id @default(uuid())
+  brandId     String
+  brand       Brand    @relation(fields: [brandId], references: [id])
+  name        String
+  sku         String?
+  gtin        String?  // Global Trade Item Number for 8112
+  cogs        Float?   // Cost of goods sold
+  retailPrice Float?
+  imageUrl    String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  campaigns Campaign[]
+
+  @@index([brandId])
+}
+
+model Retailer {
+  id          String   @id @default(uuid())
+  name        String
+  slug        String   @unique
+  logoUrl     String?
+  supports8112 Boolean @default(true)
+  regions     String?  // JSON string
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  campaigns Campaign[]
+}
+
+model Campaign {
+  id               String   @id @default(uuid())
+  brandId          String
+  brand            Brand    @relation(fields: [brandId], references: [id])
+  productId        String
+  product          Product  @relation(fields: [productId], references: [id])
+  retailerId       String?
+  retailer         Retailer? @relation(fields: [retailerId], references: [id])
+  name             String
+  discountType     String   // 'fixed' | 'percent' | 'bogo'
+  discountValue    Float
+  baseGs1          String?
+  tcbMofId         String?
+  campaignStart    DateTime
+  campaignEnd      DateTime
+  totalCirculation Int?
+  status           String   @default("draft") // 'draft' | 'active' | 'paused' | 'ended'
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  couponAssignments CouponAssignment[]
+  redemptions       Redemption[]
+
+  @@index([brandId])
+  @@index([status])
+}
+
+model Influencer {
+  id              String   @id @default(uuid())
+  brandId         String
+  brand           Brand    @relation(fields: [brandId], references: [id])
+  name            String
+  email           String?
+  instagramHandle String?
+  tiktokHandle    String?
+  totalRedemptions Int     @default(0)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  couponAssignments CouponAssignment[]
+  redemptions       Redemption[]
+
+  @@index([brandId])
+}
+
+model CouponAssignment {
+  id            String   @id @default(uuid())
+  campaignId    String
+  campaign      Campaign @relation(fields: [campaignId], references: [id])
+  influencerId  String
+  influencer    Influencer @relation(fields: [influencerId], references: [id])
+  serializedGs1 String   @unique
+  trackingLink  String?
+  qrCodeUrl     String?
+  status        String   @default("active") // 'active' | 'redeemed' | 'expired'
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  redemptions Redemption[]
+
+  @@index([serializedGs1])
+  @@index([campaignId])
+  @@index([influencerId])
+}
+
+model Redemption {
+  id                 String   @id @default(uuid())
+  couponAssignmentId String?
+  couponAssignment   CouponAssignment? @relation(fields: [couponAssignmentId], references: [id])
+  campaignId         String
+  campaign           Campaign @relation(fields: [campaignId], references: [id])
+  influencerId       String?
+  influencer         Influencer? @relation(fields: [influencerId], references: [id])
+  serializedGs1      String
+  redeemedAt         DateTime
+  retailerLocation   String?
+  customerId         String?
+  customer           Customer? @relation(fields: [customerId], references: [id])
+  createdAt          DateTime @default(now())
+
+  @@index([campaignId, redeemedAt])
+  @@index([influencerId, redeemedAt])
+}
+
+model Customer {
+  id               String   @id @default(uuid())
+  brandId          String
+  brand            Brand    @relation(fields: [brandId], references: [id])
+  email            String?
+  phone            String?
+  totalRedemptions Int      @default(0)
+  isAffiliate      Boolean  @default(false)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  redemptions Redemption[]
+  affiliate   Affiliate?
+
+  @@index([brandId])
+  @@index([email])
+}
+
+model Affiliate {
+  id                String   @id @default(uuid())
+  customerId        String   @unique
+  customer          Customer @relation(fields: [customerId], references: [id])
+  brandId           String
+  code              String   @unique
+  commissionPercent Float    @default(10)
+  totalEarnings     Float    @default(0)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
+
+// Automation system (Phase 2)
+model Automation {
+  id          String   @id @default(uuid())
+  brandId     String
+  brand       Brand    @relation(fields: [brandId], references: [id])
+  name        String
+  triggerType String   // 'coupon_redeemed' | 'customer_created'
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  steps AutomationStep[]
+
+  @@index([brandId, triggerType])
+}
+
+model AutomationStep {
+  id           String   @id @default(uuid())
+  automationId String
+  automation   Automation @relation(fields: [automationId], references: [id])
+  stepOrder    Int
+  actionType   String   // 'send_email' | 'send_sms' | 'create_affiliate'
+  actionConfig String   // JSON string
+  delaySeconds Int      @default(0)
+  createdAt    DateTime @default(now())
+
+  @@index([automationId, stepOrder])
+}
