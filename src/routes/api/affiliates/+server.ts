@@ -1,7 +1,8 @@
-import { json } from '@sveltejs/kit';
+import { json, error } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 
 // Sample affiliates for demo (customers who have been converted)
+// NOTE: In-memory state - data resets on server restart (intentional for demo)
 const sampleAffiliates = [
     {
         id: 'aff-001',
@@ -71,7 +72,12 @@ export const GET: RequestHandler = async () => {
 
 // POST /api/affiliates - Create affiliate
 export const POST: RequestHandler = async ({ request }) => {
-    const data = await request.json();
+    let data;
+    try {
+        data = await request.json();
+    } catch {
+        throw error(400, 'Invalid JSON in request body');
+    }
     const newAffiliate = {
         id: `aff-${Date.now()}`,
         code: data.code || `REF${Date.now().toString(36).toUpperCase()}`,

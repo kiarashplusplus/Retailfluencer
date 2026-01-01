@@ -1,7 +1,8 @@
-import { json } from '@sveltejs/kit';
+import { json, error } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 
 // Sample automations for demo (with fixed dates for consistency)
+// NOTE: In-memory state - data resets on server restart (intentional for demo)
 const DEMO_DATE = '2026-01-01T00:00:00Z';
 
 const sampleAutomations = [
@@ -54,7 +55,12 @@ export const GET: RequestHandler = async () => {
 
 // POST /api/automations - Create new automation
 export const POST: RequestHandler = async ({ request }) => {
-    const data = await request.json();
+    let data;
+    try {
+        data = await request.json();
+    } catch {
+        throw error(400, 'Invalid JSON in request body');
+    }
     const newAutomation = {
         id: `auto-${Date.now()}`,
         ...data,
@@ -73,7 +79,12 @@ export const POST: RequestHandler = async ({ request }) => {
 
 // PATCH /api/automations - Toggle automation
 export const PATCH: RequestHandler = async ({ request }) => {
-    const data = await request.json();
+    let data;
+    try {
+        data = await request.json();
+    } catch {
+        throw error(400, 'Invalid JSON in request body');
+    }
 
     // Update in sample automations
     const sample = sampleAutomations.find(a => a.id === data.id);

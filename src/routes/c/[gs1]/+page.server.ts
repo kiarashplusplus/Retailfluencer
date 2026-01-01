@@ -94,6 +94,6 @@ function generateQrDataUrl(gs1: string): string {
 
     svg += '</svg>';
 
-    // Use btoa for edge compatibility (Buffer is Node.js only)
-    return `data:image/svg+xml;base64,${btoa(svg)}`;
+    // Use Buffer.from for Node.js SSR compatibility
+    return `data:image/svg+xml;base64,${Buffer.from(svg).toString('base64')}`;
 }
