@@ -127,36 +127,204 @@ export const mockCustomers = [
 // Total: 36 + 17 + 13 + 1 = 67 ✓ (cust-006 has 4 instead of 3)
 
 
-// Revenue calculation:
-// Kombucha ($4.99) × 27 = $134.73
-// Protein Bar ($2.99) × 22 = $65.78
-// Oat Milk ($5.49) × 18 = $98.82
-// Total Revenue: $299.33
-export const mockDashboardData = {
-    totalRedemptions: 67,
-    activeCampaigns: 3,
-    totalInfluencers: 4,
-    totalProducts: 3,
-    revenue: 299.33,
-    topInfluencers: mockInfluencers.map(i => ({
-        id: i.id,
-        name: i.name,
-        totalRedemptions: i.totalRedemptions,
-        instagramHandle: i.instagramHandle,
-        tiktokHandle: i.tiktokHandle
-    })),
-    recentActivity: [
+// ============================================
+// MUTABLE MOCK STATE (for demo without database)
+// ============================================
+
+export interface MockCouponAssignment {
+    id: string;
+    campaignId: string;
+    influencerId: string;
+    serializedGs1: string;
+    trackingLink: string;
+    qrCodeUrl: string;
+    status: 'active' | 'redeemed' | 'expired';
+    createdAt: string;
+}
+
+export interface MockRedemption {
+    id: string;
+    couponAssignmentId: string;
+    campaignId: string;
+    influencerId: string;
+    serializedGs1: string;
+    redeemedAt: string;
+    retailerLocation: string;
+    customerId?: string;
+}
+
+// Mutable arrays for demo state
+export const mockCouponAssignments: MockCouponAssignment[] = [
+    // Pre-seed some assignments for demo
+    {
+        id: 'assign-001',
+        campaignId: 'camp-001',
+        influencerId: 'inf-001',
+        serializedGs1: '8112008500123456780000000000001',
+        trackingLink: '/c/8112008500123456780000000000001',
+        qrCodeUrl: '',
+        status: 'active',
+        createdAt: new Date().toISOString()
+    },
+    {
+        id: 'assign-002',
+        campaignId: 'camp-002',
+        influencerId: 'inf-002',
+        serializedGs1: '8112008500123459990000000000002',
+        trackingLink: '/c/8112008500123459990000000000002',
+        qrCodeUrl: '',
+        status: 'active',
+        createdAt: new Date().toISOString()
+    }
+];
+
+export const mockRedemptions: MockRedemption[] = [];
+
+// Counter for generating unique IDs
+let assignmentCounter = 100;
+let redemptionCounter = 100;
+
+// Helper to find assignment by GS1
+export function findAssignmentByGs1(gs1: string): MockCouponAssignment | undefined {
+    return mockCouponAssignments.find(a => a.serializedGs1 === gs1);
+}
+
+// Helper to create a new assignment
+export function createMockAssignment(
+    campaignId: string,
+    influencerId: string
+): MockCouponAssignment {
+    assignmentCounter++;
+    const campaign = mockCampaigns.find(c => c.id === campaignId);
+    const product = campaign ? mockProducts.find(p => p.id === campaign.productId) : null;
+    const gtin = product?.gtin || '00850012345678';
+
+    const serializedGs1 = `8112${gtin.slice(-10)}${String(assignmentCounter).padStart(12, '0')}`;
+
+    const assignment: MockCouponAssignment = {
+        id: `assign-${assignmentCounter}`,
+        campaignId,
+        influencerId,
+        serializedGs1,
+        trackingLink: `/c/${serializedGs1}`,
+        qrCodeUrl: `/api/qr/${serializedGs1}`,
+        status: 'active',
+        createdAt: new Date().toISOString()
+    };
+
+    mockCouponAssignments.push(assignment);
+
+    // Update campaign count
+    if (campaign && campaign._count) {
+        campaign._count.couponAssignments++;
+    }
+
+    return assignment;
+}
+
+// Helper to simulate a redemption
+export function simulateRedemption(
+    assignment: MockCouponAssignment,
+    retailerLocation: string = 'Simulated - Store #1234'
+): MockRedemption {
+    redemptionCounter++;
+
+    const redemption: MockRedemption = {
+        id: `redeem-${redemptionCounter}`,
+        couponAssignmentId: assignment.id,
+        campaignId: assignment.campaignId,
+        influencerId: assignment.influencerId,
+        serializedGs1: assignment.serializedGs1,
+        redeemedAt: new Date().toISOString(),
+        retailerLocation
+    };
+
+    mockRedemptions.push(redemption);
+
+    // Update assignment status
+    assignment.status = 'redeemed';
+
+    // Update campaign redemption count
+    const campaign = mockCampaigns.find(c => c.id === assignment.campaignId);
+    if (campaign && campaign._count) {
+        campaign._count.redemptions++;
+    }
+
+    // Update influencer redemption count
+    const influencer = mockInfluencers.find(i => i.id === assignment.influencerId);
+    if (influencer) {
+        influencer.totalRedemptions++;
+        if (influencer._count) {
+            influencer._count.redemptions++;
+        }
+    }
+
+    return redemption;
+}
+
+// Dynamic dashboard data computation
+export function getDashboardData() {
+    const baseRedemptions = 67; // Original mock count
+    const newRedemptions = mockRedemptions.length;
+    const totalRedemptions = baseRedemptions + newRedemptions;
+
+    // Calculate revenue
+    const baseRevenue = 299.33;
+    let newRevenue = 0;
+    for (const r of mockRedemptions) {
+        const campaign = mockCampaigns.find(c => c.id === r.campaignId);
+        if (campaign?.product?.retailPrice) {
+            newRevenue += campaign.product.retailPrice;
+        }
+    }
+
+    // Build recent activity - newest first
+    const recentActivity = [
+        ...mockRedemptions.slice().reverse().slice(0, 5).map(r => {
+            const influencer = mockInfluencers.find(i => i.id === r.influencerId);
+            const campaign = mockCampaigns.find(c => c.id === r.campaignId);
+            const timeDiff = Date.now() - new Date(r.redeemedAt).getTime();
+            const minutes = Math.floor(timeDiff / 60000);
+            const timeStr = minutes < 1 ? 'Just now' :
+                minutes < 60 ? `${minutes} minutes ago` :
+                    `${Math.floor(minutes / 60)} hours ago`;
+            return {
+                description: `${influencer?.name || 'Unknown'} generated a sale for ${campaign?.name || 'Campaign'}`,
+                time: timeStr
+            };
+        }),
         { description: 'Sarah Fit generated a sale for Summer Hydration', time: '2 hours ago' },
         { description: 'Mike Foodie generated a sale for Back to School Snack', time: '5 hours ago' },
         { description: 'Jessica Wellness generated a sale for Summer Hydration', time: '1 day ago' },
         { description: 'Alex Runner generated a sale for Morning Routine', time: '2 days ago' },
         { description: 'Sarah Fit generated a sale for Morning Routine', time: '3 days ago' },
-    ],
-    campaignStats: mockCampaigns.map(c => ({
-        id: c.id,
-        name: c.name,
-        status: c.status,
-        _count: c._count
-    }))
-};
+    ].slice(0, 10);
+
+    return {
+        totalRedemptions,
+        activeCampaigns: mockCampaigns.filter(c => c.status === 'active').length,
+        totalInfluencers: mockInfluencers.length,
+        totalProducts: mockProducts.length,
+        revenue: Math.round((baseRevenue + newRevenue) * 100) / 100,
+        topInfluencers: [...mockInfluencers]
+            .sort((a, b) => b.totalRedemptions - a.totalRedemptions)
+            .map(i => ({
+                id: i.id,
+                name: i.name,
+                totalRedemptions: i.totalRedemptions,
+                instagramHandle: i.instagramHandle,
+                tiktokHandle: i.tiktokHandle
+            })),
+        recentActivity,
+        campaignStats: mockCampaigns.map(c => ({
+            id: c.id,
+            name: c.name,
+            status: c.status,
+            _count: c._count
+        }))
+    };
+}
+
+// Legacy static export (for backward compat)
+export const mockDashboardData = getDashboardData();
 
