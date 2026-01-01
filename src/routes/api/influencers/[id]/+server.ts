@@ -1,51 +1,23 @@
-import { json, error } from '@sveltejs/kit';
+import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
+import { mockInfluencers } from '$lib/mock-data';
 
-// GET /api/influencers/[id] - Get influencer details with assignments
-export const GET: RequestHandler = async ({ params, locals }) => {
-    const influencer = await locals.db.influencer.findUnique({
-        where: { id: params.id },
-        include: {
-            brand: true,
-            couponAssignments: {
-                include: {
-                    campaign: {
-                        select: { id: true, name: true, status: true }
-                    }
-                }
-            }
-        }
-    });
-
+// GET /api/influencers/[id]
+export const GET: RequestHandler = async ({ params }) => {
+    const influencer = mockInfluencers.find(i => i.id === params.id);
     if (!influencer) {
-        throw error(404, 'Influencer not found');
+        return json({ error: 'Influencer not found' }, { status: 404 });
     }
-
     return json(influencer);
 };
 
-// PATCH /api/influencers/[id] - Update influencer
-export const PATCH: RequestHandler = async ({ params, request, locals }) => {
+// PATCH /api/influencers/[id]
+export const PATCH: RequestHandler = async ({ params, request }) => {
     const data = await request.json();
-
-    const influencer = await locals.db.influencer.update({
-        where: { id: params.id },
-        data: {
-            name: data.name,
-            email: data.email,
-            instagramHandle: data.instagramHandle,
-            tiktokHandle: data.tiktokHandle
-        }
-    });
-
-    return json(influencer);
+    return json({ id: params.id, ...data });
 };
 
-// DELETE /api/influencers/[id] - Delete influencer
-export const DELETE: RequestHandler = async ({ params, locals }) => {
-    await locals.db.influencer.delete({
-        where: { id: params.id }
-    });
-
+// DELETE /api/influencers/[id]
+export const DELETE: RequestHandler = async () => {
     return json({ success: true });
 };

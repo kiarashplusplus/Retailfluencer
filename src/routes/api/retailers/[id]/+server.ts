@@ -1,41 +1,23 @@
-import { json, error } from '@sveltejs/kit';
+import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
+import { mockRetailers } from '$lib/mock-data';
 
-// GET /api/retailers/[id] - Get a single retailer
-export const GET: RequestHandler = async ({ params, locals }) => {
-    const retailer = await locals.db.retailer.findUnique({
-        where: { id: params.id }
-    });
-
+// GET /api/retailers/[id]
+export const GET: RequestHandler = async ({ params }) => {
+    const retailer = mockRetailers.find(r => r.id === params.id);
     if (!retailer) {
-        throw error(404, 'Retailer not found');
+        return json({ error: 'Retailer not found' }, { status: 404 });
     }
-
     return json(retailer);
 };
 
-// PATCH /api/retailers/[id] - Update a retailer
-export const PATCH: RequestHandler = async ({ params, request, locals }) => {
+// PATCH /api/retailers/[id]
+export const PATCH: RequestHandler = async ({ params, request }) => {
     const data = await request.json();
-
-    const retailer = await locals.db.retailer.update({
-        where: { id: params.id },
-        data: {
-            name: data.name,
-            logoUrl: data.logoUrl,
-            supports8112: data.supports8112,
-            regions: data.regions ? JSON.stringify(data.regions) : undefined
-        }
-    });
-
-    return json(retailer);
+    return json({ id: params.id, ...data });
 };
 
-// DELETE /api/retailers/[id] - Delete a retailer
-export const DELETE: RequestHandler = async ({ params, locals }) => {
-    await locals.db.retailer.delete({
-        where: { id: params.id }
-    });
-
+// DELETE /api/retailers/[id]
+export const DELETE: RequestHandler = async () => {
     return json({ success: true });
 };

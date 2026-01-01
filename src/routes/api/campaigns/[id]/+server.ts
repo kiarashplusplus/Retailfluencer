@@ -1,54 +1,23 @@
-import { json, error } from '@sveltejs/kit';
+import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
+import { mockCampaigns } from '$lib/mock-data';
 
-// GET /api/campaigns/[id] - Get campaign details
-export const GET: RequestHandler = async ({ params, locals }) => {
-    const campaign = await locals.db.campaign.findUnique({
-        where: { id: params.id },
-        include: {
-            product: true,
-            retailer: true,
-            couponAssignments: {
-                include: { influencer: true }
-            },
-            _count: {
-                select: { redemptions: true, couponAssignments: true }
-            }
-        }
-    });
-
+// GET /api/campaigns/[id]
+export const GET: RequestHandler = async ({ params }) => {
+    const campaign = mockCampaigns.find(c => c.id === params.id);
     if (!campaign) {
-        throw error(404, 'Campaign not found');
+        return json({ error: 'Campaign not found' }, { status: 404 });
     }
-
     return json(campaign);
 };
 
-// PATCH /api/campaigns/[id] - Update campaign
-export const PATCH: RequestHandler = async ({ params, request, locals }) => {
+// PATCH /api/campaigns/[id]
+export const PATCH: RequestHandler = async ({ params, request }) => {
     const data = await request.json();
-
-    const campaign = await locals.db.campaign.update({
-        where: { id: params.id },
-        data: {
-            name: data.name,
-            discountType: data.discountType,
-            discountValue: data.discountValue,
-            campaignStart: data.startDate ? new Date(data.startDate) : undefined,
-            campaignEnd: data.endDate ? new Date(data.endDate) : undefined,
-            totalCirculation: data.maxRedemptions,
-            status: data.status
-        }
-    });
-
-    return json(campaign);
+    return json({ id: params.id, ...data });
 };
 
-// DELETE /api/campaigns/[id] - Delete campaign
-export const DELETE: RequestHandler = async ({ params, locals }) => {
-    await locals.db.campaign.delete({
-        where: { id: params.id }
-    });
-
+// DELETE /api/campaigns/[id]
+export const DELETE: RequestHandler = async () => {
     return json({ success: true });
 };

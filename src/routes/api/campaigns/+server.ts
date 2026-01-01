@@ -1,68 +1,26 @@
-import { json, error } from '@sveltejs/kit';
+import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
-import {
-    createCampaignSchema,
-    updateCampaignSchema,
-    validateOrThrow
-} from '$lib/schemas';
+import { mockCampaigns } from '$lib/mock-data';
 
-// GET /api/campaigns - List campaigns (requires brandId query param)
-export const GET: RequestHandler = async ({ url, locals }) => {
+// GET /api/campaigns - List campaigns
+export const GET: RequestHandler = async ({ url }) => {
     const brandId = url.searchParams.get('brandId');
-
-    if (!brandId) {
-        throw error(400, 'brandId query parameter is required');
-    }
-
-    const campaigns = await locals.db.campaign.findMany({
-        where: { brandId },
-        include: {
-            product: { select: { id: true, name: true } },
-            retailer: { select: { id: true, name: true } },
-            _count: {
-                select: {
-                    couponAssignments: true,
-                    redemptions: true
-                }
-            }
-        },
-        orderBy: { createdAt: 'desc' }
-    });
-
+    const campaigns = brandId
+        ? mockCampaigns.filter(c => c.brandId === brandId || brandId === 'demo-brand-001')
+        : mockCampaigns;
     return json(campaigns);
 };
 
-// POST /api/campaigns - Create a new campaign
-export const POST: RequestHandler = async ({ request, locals }) => {
-    const rawData = await request.json();
-
-    // Validate input
-    let data: ReturnType<typeof createCampaignSchema.parse>;
-    try {
-        data = validateOrThrow(createCampaignSchema, rawData);
-    } catch (err) {
-        throw error(400, err instanceof Error ? err.message : 'Invalid input');
-    }
-
-    try {
-        const campaign = await locals.db.campaign.create({
-            data: {
-                brandId: data.brandId,
-                productId: data.productId,
-                retailerId: data.retailerId,
-                name: data.name,
-                discountType: data.discountType,
-                discountValue: data.discountValue,
-                campaignStart: new Date(data.startDate),
-                campaignEnd: new Date(data.endDate),
-                totalCirculation: data.maxRedemptions,
-                status: 'active'
-            }
-        });
-
-        return json(campaign, { status: 201 });
-    } catch (err) {
-        const message = err instanceof Error ? err.message : 'Failed to create campaign';
-        throw error(500, message);
-    }
+// POST /api/campaigns - Create a new campaign (demo: no-op)
+export const POST: RequestHandler = async ({ request }) => {
+    const data = await request.json();
+    const newCampaign = {
+        id: `camp-${Date.now()}`,
+        ...data,
+        status: 'active',
+        product: { id: data.productId, name: 'New Product' },
+        retailer: { id: data.retailerId, name: 'New Retailer' },
+        _count: { couponAssignments: 0, redemptions: 0 }
+    };
+    return json(newCampaign, { status: 201 });
 };

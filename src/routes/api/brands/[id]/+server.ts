@@ -1,58 +1,22 @@
-import { json, error } from '@sveltejs/kit';
+import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
+import { mockBrand } from '$lib/mock-data';
 
-// GET /api/brands/[id] - Get brand details
-export const GET: RequestHandler = async ({ params, locals }) => {
-    const brand = await locals.db.brand.findUnique({
-        where: { id: params.id },
-        include: {
-            products: true,
-            campaigns: {
-                include: {
-                    product: true,
-                    retailer: true
-                }
-            },
-            influencers: true,
-            _count: {
-                select: {
-                    products: true,
-                    campaigns: true,
-                    influencers: true,
-                    customers: true
-                }
-            }
-        }
-    });
-
-    if (!brand) {
-        throw error(404, 'Brand not found');
+// GET /api/brands/[id]
+export const GET: RequestHandler = async ({ params }) => {
+    if (params.id === mockBrand.id || params.id === 'demo-brand-001') {
+        return json(mockBrand);
     }
-
-    return json(brand);
+    return json({ error: 'Brand not found' }, { status: 404 });
 };
 
-// PATCH /api/brands/[id] - Update brand
-export const PATCH: RequestHandler = async ({ params, request, locals }) => {
+// PATCH /api/brands/[id]
+export const PATCH: RequestHandler = async ({ params, request }) => {
     const data = await request.json();
-
-    const brand = await locals.db.brand.update({
-        where: { id: params.id },
-        data: {
-            name: data.name,
-            logoUrl: data.logoUrl,
-            tcbFunderId: data.tcbFunderId
-        }
-    });
-
-    return json(brand);
+    return json({ id: params.id, ...data });
 };
 
-// DELETE /api/brands/[id] - Delete brand
-export const DELETE: RequestHandler = async ({ params, locals }) => {
-    await locals.db.brand.delete({
-        where: { id: params.id }
-    });
-
+// DELETE /api/brands/[id]
+export const DELETE: RequestHandler = async () => {
     return json({ success: true });
 };

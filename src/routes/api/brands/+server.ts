@@ -1,49 +1,26 @@
-import { json, error } from '@sveltejs/kit';
+import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
+import { mockBrand } from '$lib/mock-data';
 
 // GET /api/brands - List all brands
-export const GET: RequestHandler = async ({ locals }) => {
-    const brands = await locals.db.brand.findMany({
-        include: {
-            _count: {
-                select: {
-                    products: true,
-                    campaigns: true,
-                    influencers: true
-                }
-            }
-        },
-        orderBy: { createdAt: 'desc' }
-    });
-
-    return json(brands);
+export const GET: RequestHandler = async () => {
+    return json([{
+        ...mockBrand,
+        _count: {
+            products: 3,
+            campaigns: 3,
+            influencers: 4
+        }
+    }]);
 };
 
-// POST /api/brands - Create a new brand
-export const POST: RequestHandler = async ({ request, locals }) => {
+// POST /api/brands - Create a new brand (demo: no-op)
+export const POST: RequestHandler = async ({ request }) => {
     const data = await request.json();
-
-    if (!data.name || !data.slug) {
-        throw error(400, 'Missing required fields: name, slug');
-    }
-
-    // Check for duplicate slug
-    const existing = await locals.db.brand.findUnique({
-        where: { slug: data.slug }
-    });
-
-    if (existing) {
-        throw error(409, 'Brand with this slug already exists');
-    }
-
-    const brand = await locals.db.brand.create({
-        data: {
-            name: data.name,
-            slug: data.slug,
-            logoUrl: data.logoUrl,
-            tcbFunderId: data.tcbFunderId
-        }
-    });
-
-    return json(brand, { status: 201 });
+    const newBrand = {
+        id: `brand-${Date.now()}`,
+        ...data,
+        _count: { products: 0, campaigns: 0, influencers: 0 }
+    };
+    return json(newBrand, { status: 201 });
 };

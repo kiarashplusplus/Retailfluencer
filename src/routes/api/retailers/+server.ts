@@ -1,64 +1,19 @@
-import { json, error } from '@sveltejs/kit';
+import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
+import { mockRetailers } from '$lib/mock-data';
 
 // GET /api/retailers - List all retailers
-export const GET: RequestHandler = async ({ locals }) => {
-    const retailers = await locals.db.retailer.findMany({
-        orderBy: { name: 'asc' },
-        include: {
-            campaigns: {
-                select: {
-                    _count: {
-                        select: { redemptions: true }
-                    }
-                }
-            },
-            _count: {
-                select: {
-                    campaigns: true
-                }
-            }
-        }
-    });
-
-    // Calculate total redemptions manually as Prisma doesn't support nested aggregation counts directly in findMany
-    const transformedRetailers = retailers.map(r => ({
-        ...r,
-        _count: {
-            ...r._count,
-            redemptions: r.campaigns.reduce((sum, c) => sum + c._count.redemptions, 0)
-        }
-    }));
-
-    return json(transformedRetailers);
+export const GET: RequestHandler = async () => {
+    return json(mockRetailers);
 };
 
-// POST /api/retailers - Create a new retailer
-export const POST: RequestHandler = async ({ request, locals }) => {
+// POST /api/retailers - Create a new retailer (demo: no-op)
+export const POST: RequestHandler = async ({ request }) => {
     const data = await request.json();
-
-    if (!data.name || !data.slug) {
-        throw error(400, 'Missing required fields: name, slug');
-    }
-
-    // Check for duplicate slug
-    const existing = await locals.db.retailer.findUnique({
-        where: { slug: data.slug }
-    });
-
-    if (existing) {
-        throw error(409, 'Retailer with this slug already exists');
-    }
-
-    const retailer = await locals.db.retailer.create({
-        data: {
-            name: data.name,
-            slug: data.slug,
-            logoUrl: data.logoUrl,
-            supports8112: data.supports8112 ?? true,
-            regions: data.regions ? JSON.stringify(data.regions) : null
-        }
-    });
-
-    return json(retailer, { status: 201 });
+    const newRetailer = {
+        id: `ret-${Date.now()}`,
+        ...data,
+        _count: { campaigns: 0, redemptions: 0 }
+    };
+    return json(newRetailer, { status: 201 });
 };

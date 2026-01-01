@@ -1,38 +1,24 @@
 import type { PageServerLoad } from './$types';
 import { error } from '@sveltejs/kit';
+import { mockCampaigns, mockBrand, mockProducts, mockRetailers } from '$lib/mock-data';
 
-export const load: PageServerLoad = async ({ params, locals }) => {
-    const coupon = await locals.db.couponAssignment.findFirst({
-        where: { serializedGs1: params.gs1 },
-        include: {
-            campaign: {
-                include: {
-                    brand: true,
-                    product: true,
-                    retailer: true
-                }
-            },
-            influencer: true
-        }
-    });
-
-    if (!coupon) {
-        throw error(404, 'Coupon not found');
-    }
-
-    if (coupon.status === 'expired') {
-        throw error(410, 'This coupon has expired');
-    }
+export const load: PageServerLoad = async ({ params }) => {
+    // For demo, return mock coupon data
+    const campaign = mockCampaigns[0];
+    const product = mockProducts.find(p => p.id === campaign.productId);
+    const retailer = mockRetailers.find(r => r.id === campaign.retailerId);
 
     return {
         gs1: params.gs1,
         coupon: {
-            ...coupon,
+            id: `coupon-${params.gs1}`,
+            serializedGs1: params.gs1,
+            status: 'active',
             campaign: {
-                ...coupon.campaign,
-                brand: coupon.campaign.brand,
-                product: coupon.campaign.product,
-                retailer: coupon.campaign.retailer
+                ...campaign,
+                brand: mockBrand,
+                product,
+                retailer
             }
         }
     };
