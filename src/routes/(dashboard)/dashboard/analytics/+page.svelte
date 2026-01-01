@@ -13,6 +13,20 @@
     revenueTracked: number;
   }
 
+  interface Influencer {
+    name: string;
+    instagramHandle: string | null;
+    tiktokHandle: string | null;
+    totalRedemptions: number;
+  }
+
+  interface Campaign {
+    id: string;
+    name: string;
+    status: string;
+    _count: { redemptions: number };
+  }
+
   let stats = $state<DashboardStats>({
     totalRedemptions: 0,
     activeCampaigns: 0,
@@ -22,28 +36,23 @@
     revenueTracked: 0
   });
 
+  let topInfluencers = $state<Influencer[]>([]);
+  let campaignStats = $state<Campaign[]>([]);
   let isLoading = $state(true);
   let timeRange = $state<'7d' | '30d' | '90d'>('30d');
 
-  // Mock chart data - weekly redemptions for 12 weeks (totaling ~67 for most recent weeks)
-  const redemptionTrend = [3, 4, 5, 6, 8, 7, 5, 6, 7, 8, 4, 4]; // Each number represents weekly redemptions
-  
-  // Top Influencers - matching our mock data
-  const topInfluencers = [
-    { name: 'Mike Foodie', handle: '@mike_eats', redemptions: 24, revenue: 107.52 }, // 12×$4.99 + 12×$2.99
-    { name: 'Jessica Wellness', handle: '@jess_wellness', redemptions: 18, revenue: 72.82 }, // 10×$2.99 + 8×$5.49
-    { name: 'Sarah Fit', handle: '@sarahfit', redemptions: 15, revenue: 74.85 }, // 15×$4.99
-    { name: 'Alex Runner', handle: '@alexruns', redemptions: 10, revenue: 54.90 }, // 10×$5.49
-  ];
-  // Total: 24 + 18 + 15 + 10 = 67 ✓
-
-  // Campaign Performance - matching our mock data
-  const campaignPerformance = [
-    { name: 'Summer Hydration', product: 'Kombucha', retailer: 'Whole Foods', redemptions: 27, target: 100, status: 'active' },
-    { name: 'Back to School Snack', product: 'Protein Bar', retailer: 'Target', redemptions: 22, target: 100, status: 'active' },
-    { name: 'Morning Routine', product: 'Oat Milk', retailer: 'Fresh Market', redemptions: 18, target: 100, status: 'active' },
-  ];
-  // Total: 27 + 22 + 18 = 67 ✓
+  // Weekly redemptions trend (simulated based on total)
+  let redemptionTrend = $derived(() => {
+    const base = [3, 4, 5, 6, 8, 7, 5, 6, 7, 8, 4, 4];
+    // Add recent redemptions to the last week
+    const recent = Math.max(0, stats.totalRedemptions - 67);
+    if (recent > 0) {
+      const trend = [...base];
+      trend[trend.length - 1] += recent;
+      return trend;
+    }
+    return base;
+  });
 
   onMount(async () => {
     try {
@@ -59,6 +68,8 @@
           conversionRate: 3.2,
           revenueTracked: data.revenue || 0
         };
+        topInfluencers = data.topInfluencers || [];
+        campaignStats = data.campaignStats || [];
       }
     } catch (error) {
       console.error('Failed to fetch analytics:', error);
@@ -71,13 +82,25 @@
     { key: 'totalRedemptions', label: 'Total Redemptions', icon: '◎', color: '#7c3aed', trend: '+12%' },
     { key: 'activeCampaigns', label: 'Active Campaigns', icon: '▣', color: '#10b981', trend: '+2' },
     { key: 'totalInfluencers', label: 'Influencers', icon: '★', color: '#f59e0b', trend: '+5' },
-    { key: 'conversionRate', label: 'Conversion Rate', icon: '%', color: '#3b82f6', suffix: '%', trend: '+0.3%' },
+    { key: 'revenueTracked', label: 'Revenue Tracked', icon: '$', color: '#3b82f6', prefix: '$', trend: '+8%' },
   ] as const;
 
   function getMaxValue(arr: number[]): number {
     return Math.max(...arr);
   }
+
+  function getInfluencerHandle(inf: Influencer): string {
+    if (inf.instagramHandle) return `@${inf.instagramHandle}`;
+    if (inf.tiktokHandle) return `@${inf.tiktokHandle}`;
+    return '';
+  }
+
+  function estimateRevenue(inf: Influencer): number {
+    // Approximate average product price ($4.99 kombucha, $2.99 bar, $5.49 milk → ~$4.50)
+    return inf.totalRedemptions * 4.5;
+  }
 </script>
+
 
 <div class="page">
   <header class="page-header">
@@ -112,7 +135,7 @@
               {#if isLoading}
                 <span class="skeleton-inline"></span>
               {:else}
-                {stats[card.key].toLocaleString()}{card.suffix || ''}
+                {card.prefix || ''}{typeof stats[card.key] === 'number' ? stats[card.key].toLocaleString() : stats[card.key]}{card.suffix || ''}
               {/if}
             </div>
             <div class="stat-label">{card.label}</div>
@@ -132,14 +155,14 @@
         </div>
         <div class="chart-container">
           <div class="bar-chart">
-            {#each redemptionTrend as value, i}
+            {#each redemptionTrend() as value, i}
               <div 
                 class="bar-wrapper"
                 in:fly={{ y: 20, delay: 300 + i * 40, duration: 400 }}
               >
                 <div 
                   class="bar" 
-                  style="height: {(value / getMaxValue(redemptionTrend)) * 100}%"
+                  style="height: {(value / getMaxValue(redemptionTrend())) * 100}%"
                 >
                   <span class="bar-tooltip">{value}</span>
                 </div>
@@ -168,9 +191,9 @@
             </span>
             <div class="influencer-info">
               <span class="name">{influencer.name}</span>
-              <span class="stats">{influencer.handle} • {influencer.redemptions} sales</span>
+              <span class="stats">{getInfluencerHandle(influencer)} • {influencer.totalRedemptions} sales</span>
             </div>
-            <span class="revenue">${influencer.revenue.toLocaleString()}</span>
+            <span class="revenue">${estimateRevenue(influencer).toLocaleString()}</span>
           </div>
         {/each}
       </div>
@@ -183,7 +206,7 @@
         <a href="/dashboard/campaigns" class="view-all">View all →</a>
       </div>
       <div class="campaign-list">
-        {#each campaignPerformance as campaign, i}
+        {#each campaignStats as campaign, i}
           <div 
             class="campaign-row"
             in:fly={{ x: -20, delay: 400 + i * 60, duration: 400 }}
@@ -194,10 +217,10 @@
                 <div class="progress-bar">
                   <div 
                     class="progress-fill" 
-                    style="width: {(campaign.redemptions / campaign.target) * 100}%"
+                    style="width: {Math.min(100, (campaign._count?.redemptions || 0))}%"
                   ></div>
                 </div>
-                <span class="progress-text">{campaign.redemptions} / {campaign.target}</span>
+                <span class="progress-text">{campaign._count?.redemptions || 0} / 100</span>
               </div>
             </div>
             <Badge variant={campaign.status === 'active' ? 'success' : 'default'}>
