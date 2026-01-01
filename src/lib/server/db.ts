@@ -1,9 +1,20 @@
-import { PrismaClient } from '@prisma/client';
+// D1-only database client for Cloudflare deployment
+// Exports a function to get DB client from platform
 
-const globalForPrisma = globalThis as unknown as { prisma: PrismaClient };
+import type { PrismaClient } from '@prisma/client';
 
-export const db = globalForPrisma.prisma || new PrismaClient();
+// Helper to get DB client from platform - use D1 adapter
+export function getDbFromPlatform(platform?: App.Platform): PrismaClient | null {
+    if (!platform?.env?.DB) {
+        return null;
+    }
 
-if (process.env.NODE_ENV !== 'production') {
-    globalForPrisma.prisma = db;
+    // These are required dynamically to avoid module load issues on edge
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const { PrismaClient: PC } = require('@prisma/client');
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const { PrismaD1 } = require('@prisma/adapter-d1');
+
+    const adapter = new PrismaD1(platform.env.DB);
+    return new PC({ adapter });
 }

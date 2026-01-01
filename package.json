@@ -21,6 +21,7 @@
 		"vite": "^7.2.6"
 	},
 	"dependencies": {
+		"@prisma/adapter-d1": "^7.2.0",
 		"@prisma/client": "^5.22.0",
 		"@sveltejs/adapter-cloudflare": "^7.2.4",
 		"@types/qrcode": "^1.5.6",

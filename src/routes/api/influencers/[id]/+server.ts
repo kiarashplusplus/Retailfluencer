@@ -1,14 +1,19 @@
 import { json, error } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
-import { db } from '$lib/server/db';
-import { getInfluencerAssignments } from '$lib/services/coupon-assignment';
 
 // GET /api/influencers/[id] - Get influencer details with assignments
-export const GET: RequestHandler = async ({ params }) => {
-    const influencer = await db.influencer.findUnique({
+export const GET: RequestHandler = async ({ params, locals }) => {
+    const influencer = await locals.db.influencer.findUnique({
         where: { id: params.id },
         include: {
-            brand: true
+            brand: true,
+            couponAssignments: {
+                include: {
+                    campaign: {
+                        select: { id: true, name: true, status: true }
+                    }
+                }
+            }
         }
     });
 
@@ -16,19 +21,14 @@ export const GET: RequestHandler = async ({ params }) => {
         throw error(404, 'Influencer not found');
     }
 
-    const assignments = await getInfluencerAssignments(params.id);
-
-    return json({
-        ...influencer,
-        assignments
-    });
+    return json(influencer);
 };
 
 // PATCH /api/influencers/[id] - Update influencer
-export const PATCH: RequestHandler = async ({ params, request }) => {
+export const PATCH: RequestHandler = async ({ params, request, locals }) => {
     const data = await request.json();
 
-    const influencer = await db.influencer.update({
+    const influencer = await locals.db.influencer.update({
         where: { id: params.id },
         data: {
             name: data.name,
@@ -42,8 +42,8 @@ export const PATCH: RequestHandler = async ({ params, request }) => {
 };
 
 // DELETE /api/influencers/[id] - Delete influencer
-export const DELETE: RequestHandler = async ({ params }) => {
-    await db.influencer.delete({
+export const DELETE: RequestHandler = async ({ params, locals }) => {
+    await locals.db.influencer.delete({
         where: { id: params.id }
     });
 

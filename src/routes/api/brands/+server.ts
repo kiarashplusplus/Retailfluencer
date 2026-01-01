@@ -1,10 +1,9 @@
 import { json, error } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
-import { db } from '$lib/server/db';
 
 // GET /api/brands - List all brands
-export const GET: RequestHandler = async () => {
-    const brands = await db.brand.findMany({
+export const GET: RequestHandler = async ({ locals }) => {
+    const brands = await locals.db.brand.findMany({
         include: {
             _count: {
                 select: {
@@ -21,7 +20,7 @@ export const GET: RequestHandler = async () => {
 };
 
 // POST /api/brands - Create a new brand
-export const POST: RequestHandler = async ({ request }) => {
+export const POST: RequestHandler = async ({ request, locals }) => {
     const data = await request.json();
 
     if (!data.name || !data.slug) {
@@ -29,7 +28,7 @@ export const POST: RequestHandler = async ({ request }) => {
     }
 
     // Check for duplicate slug
-    const existing = await db.brand.findUnique({
+    const existing = await locals.db.brand.findUnique({
         where: { slug: data.slug }
     });
 
@@ -37,7 +36,7 @@ export const POST: RequestHandler = async ({ request }) => {
         throw error(409, 'Brand with this slug already exists');
     }
 
-    const brand = await db.brand.create({
+    const brand = await locals.db.brand.create({
         data: {
             name: data.name,
             slug: data.slug,

@@ -1,10 +1,9 @@
 import { json, error } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
-import { db } from '$lib/server/db';
 
 // GET /api/retailers/[id] - Get a single retailer
-export const GET: RequestHandler = async ({ params }) => {
-    const retailer = await db.retailer.findUnique({
+export const GET: RequestHandler = async ({ params, locals }) => {
+    const retailer = await locals.db.retailer.findUnique({
         where: { id: params.id }
     });
 
@@ -16,10 +15,10 @@ export const GET: RequestHandler = async ({ params }) => {
 };
 
 // PATCH /api/retailers/[id] - Update a retailer
-export const PATCH: RequestHandler = async ({ params, request }) => {
+export const PATCH: RequestHandler = async ({ params, request, locals }) => {
     const data = await request.json();
 
-    const retailer = await db.retailer.update({
+    const retailer = await locals.db.retailer.update({
         where: { id: params.id },
         data: {
             name: data.name,
@@ -33,8 +32,8 @@ export const PATCH: RequestHandler = async ({ params, request }) => {
 };
 
 // DELETE /api/retailers/[id] - Delete a retailer
-export const DELETE: RequestHandler = async ({ params }) => {
-    await db.retailer.delete({
+export const DELETE: RequestHandler = async ({ params, locals }) => {
+    await locals.db.retailer.delete({
         where: { id: params.id }
     });
 

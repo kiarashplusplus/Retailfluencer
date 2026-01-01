@@ -1,13 +1,12 @@
 import { json, error } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
-import { db } from '$lib/server/db';
 import { createInfluencerSchema, updateInfluencerSchema, validateOrThrow } from '$lib/schemas';
 
 // GET /api/influencers - List influencers (optionally filter by brandId)
-export const GET: RequestHandler = async ({ url }) => {
+export const GET: RequestHandler = async ({ url, locals }) => {
     const brandId = url.searchParams.get('brandId');
 
-    const influencers = await db.influencer.findMany({
+    const influencers = await locals.db.influencer.findMany({
         where: brandId ? { brandId } : undefined,
         include: {
             brand: {
@@ -27,7 +26,7 @@ export const GET: RequestHandler = async ({ url }) => {
 };
 
 // POST /api/influencers - Create a new influencer
-export const POST: RequestHandler = async ({ request }) => {
+export const POST: RequestHandler = async ({ request, locals }) => {
     const rawData = await request.json();
 
     // Validate input
@@ -38,7 +37,7 @@ export const POST: RequestHandler = async ({ request }) => {
         throw error(400, err instanceof Error ? err.message : 'Invalid input');
     }
 
-    const influencer = await db.influencer.create({
+    const influencer = await locals.db.influencer.create({
         data: {
             brandId: data.brandId,
             name: data.name,

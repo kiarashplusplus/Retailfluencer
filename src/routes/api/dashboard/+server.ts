@@ -1,9 +1,8 @@
 import { json, error } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
-import { db } from '$lib/server/db';
 
 // GET /api/dashboard?brandId=xxx - Get dashboard analytics for a brand
-export const GET: RequestHandler = async ({ url }) => {
+export const GET: RequestHandler = async ({ url, locals }) => {
     const brandId = url.searchParams.get('brandId');
 
     if (!brandId) {
@@ -19,22 +18,22 @@ export const GET: RequestHandler = async ({ url }) => {
         campaignStats
     ] = await Promise.all([
         // Total redemptions
-        db.redemption.count({
+        locals.db.redemption.count({
             where: { campaign: { brandId } }
         }),
 
         // Active campaigns
-        db.campaign.count({
+        locals.db.campaign.count({
             where: { brandId, status: 'active' }
         }),
 
         // Total influencers
-        db.influencer.count({
+        locals.db.influencer.count({
             where: { brandId }
         }),
 
         // Top influencers by redemptions
-        db.influencer.findMany({
+        locals.db.influencer.findMany({
             where: { brandId },
             orderBy: { totalRedemptions: 'desc' },
             take: 10,
@@ -48,7 +47,7 @@ export const GET: RequestHandler = async ({ url }) => {
         }),
 
         // Recent redemptions
-        db.redemption.findMany({
+        locals.db.redemption.findMany({
             where: { campaign: { brandId } },
             orderBy: { redeemedAt: 'desc' },
             take: 20,
@@ -63,7 +62,7 @@ export const GET: RequestHandler = async ({ url }) => {
         }),
 
         // Campaign performance
-        db.campaign.findMany({
+        locals.db.campaign.findMany({
             where: { brandId },
             select: {
                 id: true,
@@ -82,7 +81,7 @@ export const GET: RequestHandler = async ({ url }) => {
     ]);
 
     const formattedActivity = recentActivity.map(r => ({
-        description: `${r.influencer.name} generated a sale for ${r.campaign.name}`,
+        description: `${r.influencer?.name || 'Unknown'} generated a sale for ${r.campaign.name}`,
         time: getTimeAgo(new Date(r.redeemedAt))
     }));
 

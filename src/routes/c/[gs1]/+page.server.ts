@@ -1,9 +1,20 @@
 import type { PageServerLoad } from './$types';
 import { error } from '@sveltejs/kit';
-import { getCouponByGs1 } from '$lib/services/coupon-assignment';
 
-export const load: PageServerLoad = async ({ params }) => {
-    const coupon = await getCouponByGs1(params.gs1);
+export const load: PageServerLoad = async ({ params, locals }) => {
+    const coupon = await locals.db.couponAssignment.findFirst({
+        where: { serializedGs1: params.gs1 },
+        include: {
+            campaign: {
+                include: {
+                    brand: true,
+                    product: true,
+                    retailer: true
+                }
+            },
+            influencer: true
+        }
+    });
 
     if (!coupon) {
         throw error(404, 'Coupon not found');

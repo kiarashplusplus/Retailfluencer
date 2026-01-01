@@ -1,15 +1,14 @@
 import { redirect } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
-import { db } from '$lib/server/db';
 
-export const GET: RequestHandler = async ({ params, cookies }) => {
+export const GET: RequestHandler = async ({ params, cookies, locals }) => {
     const code = params.code;
 
     if (!code) {
         throw redirect(303, '/promo');
     }
 
-    const affiliate = await db.affiliate.findUnique({
+    const affiliate = await locals.db.affiliate.findUnique({
         where: { code }
     });
 

@@ -1,9 +1,8 @@
 import { json, error } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
-import { db } from '$lib/server/db';
 
 // POST /api/assignments - Assign a coupon to an influencer
-export const POST: RequestHandler = async ({ request }) => {
+export const POST: RequestHandler = async ({ request, locals }) => {
     try {
         const { brandId, campaignId, influencerId } = await request.json();
 
@@ -12,7 +11,7 @@ export const POST: RequestHandler = async ({ request }) => {
         }
 
         // Verify campaign belongs to brand
-        const campaign = await db.campaign.findUnique({
+        const campaign = await locals.db.campaign.findUnique({
             where: { id: campaignId },
             include: { product: true }
         });
@@ -22,7 +21,7 @@ export const POST: RequestHandler = async ({ request }) => {
         }
 
         // Verify influencer belongs to brand
-        const influencer = await db.influencer.findUnique({
+        const influencer = await locals.db.influencer.findUnique({
             where: { id: influencerId }
         });
 
@@ -31,7 +30,7 @@ export const POST: RequestHandler = async ({ request }) => {
         }
 
         // Check for existing active assignment
-        const existing = await db.couponAssignment.findFirst({
+        const existing = await locals.db.couponAssignment.findFirst({
             where: {
                 campaignId,
                 influencerId,
@@ -44,13 +43,11 @@ export const POST: RequestHandler = async ({ request }) => {
         }
 
         // Generate GS1 (Mock logic mimicking real standards approx)
-        // 01 + GTIN(14) + Serial(variable)
-        // Using timestamp + random for uniqueness in demo
         const gtin = campaign.product?.gtin || '00000000000000';
         const serial = Date.now().toString().slice(-6) + Math.random().toString().slice(2, 5);
         const serializedGs1 = `01${gtin}${serial}`;
 
-        const assignment = await db.couponAssignment.create({
+        const assignment = await locals.db.couponAssignment.create({
             data: {
                 campaignId,
                 influencerId,

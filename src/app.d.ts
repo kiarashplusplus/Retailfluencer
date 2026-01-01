@@ -3,11 +3,16 @@
 declare global {
 	namespace App {
 		// interface Error {}
-		// interface Locals {}
+		interface Locals {
+			db: import('@prisma/client').PrismaClient;
+		}
 		// interface PageData {}
 		// interface PageState {}
 		interface Platform {
-			env: Record<string, string>;
+			env: {
+				DB: D1Database;
+				[key: string]: unknown;
+			};
 			context: {
 				waitUntil(promise: Promise<any>): void;
 			};

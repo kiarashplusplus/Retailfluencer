@@ -1,10 +1,9 @@
 import { json, error } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
-import { db } from '$lib/server/db';
 
 // GET /api/brands/[id] - Get brand details
-export const GET: RequestHandler = async ({ params }) => {
-    const brand = await db.brand.findUnique({
+export const GET: RequestHandler = async ({ params, locals }) => {
+    const brand = await locals.db.brand.findUnique({
         where: { id: params.id },
         include: {
             products: true,
@@ -34,10 +33,10 @@ export const GET: RequestHandler = async ({ params }) => {
 };
 
 // PATCH /api/brands/[id] - Update brand
-export const PATCH: RequestHandler = async ({ params, request }) => {
+export const PATCH: RequestHandler = async ({ params, request, locals }) => {
     const data = await request.json();
 
-    const brand = await db.brand.update({
+    const brand = await locals.db.brand.update({
         where: { id: params.id },
         data: {
             name: data.name,
@@ -50,8 +49,8 @@ export const PATCH: RequestHandler = async ({ params, request }) => {
 };
 
 // DELETE /api/brands/[id] - Delete brand
-export const DELETE: RequestHandler = async ({ params }) => {
-    await db.brand.delete({
+export const DELETE: RequestHandler = async ({ params, locals }) => {
+    await locals.db.brand.delete({
         where: { id: params.id }
     });
 

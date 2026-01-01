@@ -1,12 +1,21 @@
 import { json, error } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
-import { getCampaign, updateCampaignStatus } from '$lib/services/campaign';
-import { assignCouponToInfluencer } from '$lib/services/coupon-assignment';
-import { db } from '$lib/server/db';
 
 // GET /api/campaigns/[id] - Get campaign details
-export const GET: RequestHandler = async ({ params }) => {
-    const campaign = await getCampaign(params.id);
+export const GET: RequestHandler = async ({ params, locals }) => {
+    const campaign = await locals.db.campaign.findUnique({
+        where: { id: params.id },
+        include: {
+            product: true,
+            retailer: true,
+            couponAssignments: {
+                include: { influencer: true }
+            },
+            _count: {
+                select: { redemptions: true, couponAssignments: true }
+            }
+        }
+    });
 
     if (!campaign) {
         throw error(404, 'Campaign not found');
@@ -16,10 +25,10 @@ export const GET: RequestHandler = async ({ params }) => {
 };
 
 // PATCH /api/campaigns/[id] - Update campaign
-export const PATCH: RequestHandler = async ({ params, request }) => {
+export const PATCH: RequestHandler = async ({ params, request, locals }) => {
     const data = await request.json();
 
-    const campaign = await db.campaign.update({
+    const campaign = await locals.db.campaign.update({
         where: { id: params.id },
         data: {
             name: data.name,
@@ -36,8 +45,8 @@ export const PATCH: RequestHandler = async ({ params, request }) => {
 };
 
 // DELETE /api/campaigns/[id] - Delete campaign
-export const DELETE: RequestHandler = async ({ params }) => {
-    await db.campaign.delete({
+export const DELETE: RequestHandler = async ({ params, locals }) => {
+    await locals.db.campaign.delete({
         where: { id: params.id }
     });
 

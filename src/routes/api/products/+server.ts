@@ -1,13 +1,12 @@
 import { json, error } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
-import { db } from '$lib/server/db';
 import { createProductSchema, updateProductSchema, validateOrThrow } from '$lib/schemas';
 
 // GET /api/products - List all products (optionally filter by brandId)
-export const GET: RequestHandler = async ({ url }) => {
+export const GET: RequestHandler = async ({ url, locals }) => {
     const brandId = url.searchParams.get('brandId');
 
-    const products = await db.product.findMany({
+    const products = await locals.db.product.findMany({
         where: brandId ? { brandId } : undefined,
         include: {
             brand: {
@@ -21,7 +20,7 @@ export const GET: RequestHandler = async ({ url }) => {
 };
 
 // POST /api/products - Create a new product
-export const POST: RequestHandler = async ({ request }) => {
+export const POST: RequestHandler = async ({ request, locals }) => {
     const rawData = await request.json();
 
     // Validate input
@@ -32,7 +31,7 @@ export const POST: RequestHandler = async ({ request }) => {
         throw error(400, err instanceof Error ? err.message : 'Invalid input');
     }
 
-    const product = await db.product.create({
+    const product = await locals.db.product.create({
         data: {
             brandId: data.brandId,
             name: data.name,

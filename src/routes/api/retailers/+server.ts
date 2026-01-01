@@ -1,10 +1,9 @@
 import { json, error } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
-import { db } from '$lib/server/db';
 
 // GET /api/retailers - List all retailers
-export const GET: RequestHandler = async () => {
-    const retailers = await db.retailer.findMany({
+export const GET: RequestHandler = async ({ locals }) => {
+    const retailers = await locals.db.retailer.findMany({
         orderBy: { name: 'asc' },
         include: {
             campaigns: {
@@ -35,7 +34,7 @@ export const GET: RequestHandler = async () => {
 };
 
 // POST /api/retailers - Create a new retailer
-export const POST: RequestHandler = async ({ request }) => {
+export const POST: RequestHandler = async ({ request, locals }) => {
     const data = await request.json();
 
     if (!data.name || !data.slug) {
@@ -43,7 +42,7 @@ export const POST: RequestHandler = async ({ request }) => {
     }
 
     // Check for duplicate slug
-    const existing = await db.retailer.findUnique({
+    const existing = await locals.db.retailer.findUnique({
         where: { slug: data.slug }
     });
 
@@ -51,7 +50,7 @@ export const POST: RequestHandler = async ({ request }) => {
         throw error(409, 'Retailer with this slug already exists');
     }
 
-    const retailer = await db.retailer.create({
+    const retailer = await locals.db.retailer.create({
         data: {
             name: data.name,
             slug: data.slug,
