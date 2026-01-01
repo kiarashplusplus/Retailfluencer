@@ -155,11 +155,11 @@ export interface MockRedemption {
 
 // Mutable arrays for demo state
 export const mockCouponAssignments: MockCouponAssignment[] = [
-    // Pre-seed assignments for demo
+    // Campaign 1: Summer Hydration - 2 influencers (Sarah Fit, Mike Foodie)
     {
         id: 'assign-001',
         campaignId: 'camp-001',
-        influencerId: 'inf-001',
+        influencerId: 'inf-001', // Sarah Fit
         serializedGs1: '8112008500123456780000000000001',
         trackingLink: '/c/8112008500123456780000000000001',
         qrCodeUrl: '',
@@ -168,20 +168,52 @@ export const mockCouponAssignments: MockCouponAssignment[] = [
     },
     {
         id: 'assign-002',
+        campaignId: 'camp-001',
+        influencerId: 'inf-002', // Mike Foodie
+        serializedGs1: '8112008500123456780000000000002',
+        trackingLink: '/c/8112008500123456780000000000002',
+        qrCodeUrl: '',
+        status: 'active',
+        createdAt: new Date().toISOString()
+    },
+    // Campaign 2: Back to School Snack - 2 influencers (Mike Foodie, Jessica Wellness)
+    {
+        id: 'assign-003',
         campaignId: 'camp-002',
-        influencerId: 'inf-002',
+        influencerId: 'inf-002', // Mike Foodie
+        serializedGs1: '8112008500123459990000000000001',
+        trackingLink: '/c/8112008500123459990000000000001',
+        qrCodeUrl: '',
+        status: 'active',
+        createdAt: new Date().toISOString()
+    },
+    {
+        id: 'assign-004',
+        campaignId: 'camp-002',
+        influencerId: 'inf-003', // Jessica Wellness
         serializedGs1: '8112008500123459990000000000002',
         trackingLink: '/c/8112008500123459990000000000002',
         qrCodeUrl: '',
         status: 'active',
         createdAt: new Date().toISOString()
     },
+    // Campaign 3: Morning Routine - 2 influencers (Jessica Wellness, Alex Runner)
     {
-        id: 'assign-003',
+        id: 'assign-005',
         campaignId: 'camp-003',
-        influencerId: 'inf-003',
-        serializedGs1: '8112008500123458880000000000003',
-        trackingLink: '/c/8112008500123458880000000000003',
+        influencerId: 'inf-003', // Jessica Wellness
+        serializedGs1: '8112008500123458880000000000001',
+        trackingLink: '/c/8112008500123458880000000000001',
+        qrCodeUrl: '',
+        status: 'active',
+        createdAt: new Date().toISOString()
+    },
+    {
+        id: 'assign-006',
+        campaignId: 'camp-003',
+        influencerId: 'inf-004', // Alex Runner
+        serializedGs1: '8112008500123458880000000000002',
+        trackingLink: '/c/8112008500123458880000000000002',
         qrCodeUrl: '',
         status: 'active',
         createdAt: new Date().toISOString()
