@@ -61,22 +61,22 @@ Active campaigns with status, product, retailer, and performance metrics.
 ### Campaign Builder Wizard
 5-step wizard: Basics → Product & Retailer → Discount → Influencers → Review
 
-````carousel
+**Step 1: Campaign Basics**
 ![Step 1: Campaign Basics](campaign_builder_step1_1767258802096.png)
-<!-- slide -->
+
+**Step 3: Discount Configuration**
 ![Step 3: Discount Configuration](campaign_builder_step3_1767258889655.png)
-````
 
 ---
 
 ### Automations Engine
 Node-based workflow builder with triggers (New Customer, Coupon Redeemed) and actions (Email, SMS, Create Affiliate, Wait).
 
-````carousel
+**Automations List:**
 ![Automations List](automations_page_1767259075285.png)
-<!-- slide -->
+
+**Automation Builder:**
 ![Automation Builder](automation_builder_active_1767259095248.png)
-````
 
 ---
 
@@ -90,11 +90,11 @@ Brand configuration with TCB (The Coupon Bureau) integration. "Mock Mode Active"
 ### Public Coupon Page
 Customer-facing coupon with email capture gate, QR code, and 8112 serial number.
 
-````carousel
+**Email Capture Gate:**
 ![Email Capture Gate](coupon_gate_page_1767259168819.png)
-<!-- slide -->
+
+**Coupon with QR Code:**
 ![Coupon with QR Code](coupon_redemption_page_final_1767259190657.png)
-````
 
 ---
 
