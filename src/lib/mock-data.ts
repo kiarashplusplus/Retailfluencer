@@ -155,7 +155,7 @@ export interface MockRedemption {
 
 // Mutable arrays for demo state
 export const mockCouponAssignments: MockCouponAssignment[] = [
-    // Pre-seed some assignments for demo
+    // Pre-seed assignments for demo
     {
         id: 'assign-001',
         campaignId: 'camp-001',
@@ -175,10 +175,39 @@ export const mockCouponAssignments: MockCouponAssignment[] = [
         qrCodeUrl: '',
         status: 'active',
         createdAt: new Date().toISOString()
+    },
+    {
+        id: 'assign-003',
+        campaignId: 'camp-003',
+        influencerId: 'inf-003',
+        serializedGs1: '8112008500123458880000000000003',
+        trackingLink: '/c/8112008500123458880000000000003',
+        qrCodeUrl: '',
+        status: 'active',
+        createdAt: new Date().toISOString()
     }
 ];
 
-export const mockRedemptions: MockRedemption[] = [];
+export const mockRedemptions: MockRedemption[] = [
+    // Camp-001 (Summer Hydration): 27 redemptions - show 5 sample
+    { id: 'redeem-001', couponAssignmentId: 'assign-001', campaignId: 'camp-001', influencerId: 'inf-001', serializedGs1: '811200850012345678001', redeemedAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(), retailerLocation: 'Whole Foods - Austin, TX #1234' },
+    { id: 'redeem-002', couponAssignmentId: 'assign-001', campaignId: 'camp-001', influencerId: 'inf-002', serializedGs1: '811200850012345678002', redeemedAt: new Date(Date.now() - 5 * 60 * 60 * 1000).toISOString(), retailerLocation: 'Whole Foods - San Francisco, CA #5678' },
+    { id: 'redeem-003', couponAssignmentId: 'assign-001', campaignId: 'camp-001', influencerId: 'inf-001', serializedGs1: '811200850012345678003', redeemedAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(), retailerLocation: 'Whole Foods - Denver, CO #9012' },
+    { id: 'redeem-004', couponAssignmentId: 'assign-001', campaignId: 'camp-001', influencerId: 'inf-002', serializedGs1: '811200850012345678004', redeemedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(), retailerLocation: 'Whole Foods - Seattle, WA #3456' },
+    { id: 'redeem-005', couponAssignmentId: 'assign-001', campaignId: 'camp-001', influencerId: 'inf-001', serializedGs1: '811200850012345678005', redeemedAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(), retailerLocation: 'Whole Foods - Portland, OR #7890' },
+    // Camp-002 (Back to School Snack): 22 redemptions - show 5 sample
+    { id: 'redeem-006', couponAssignmentId: 'assign-002', campaignId: 'camp-002', influencerId: 'inf-002', serializedGs1: '811200850012345999001', redeemedAt: new Date(Date.now() - 3 * 60 * 60 * 1000).toISOString(), retailerLocation: 'Target - Houston, TX #2345' },
+    { id: 'redeem-007', couponAssignmentId: 'assign-002', campaignId: 'camp-002', influencerId: 'inf-003', serializedGs1: '811200850012345999002', redeemedAt: new Date(Date.now() - 8 * 60 * 60 * 1000).toISOString(), retailerLocation: 'Target - Phoenix, AZ #6789' },
+    { id: 'redeem-008', couponAssignmentId: 'assign-002', campaignId: 'camp-002', influencerId: 'inf-002', serializedGs1: '811200850012345999003', redeemedAt: new Date(Date.now() - 1.5 * 24 * 60 * 60 * 1000).toISOString(), retailerLocation: 'Target - Chicago, IL #0123' },
+    { id: 'redeem-009', couponAssignmentId: 'assign-002', campaignId: 'camp-002', influencerId: 'inf-003', serializedGs1: '811200850012345999004', redeemedAt: new Date(Date.now() - 2.5 * 24 * 60 * 60 * 1000).toISOString(), retailerLocation: 'Target - Miami, FL #4567' },
+    { id: 'redeem-010', couponAssignmentId: 'assign-002', campaignId: 'camp-002', influencerId: 'inf-002', serializedGs1: '811200850012345999005', redeemedAt: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000).toISOString(), retailerLocation: 'Target - Atlanta, GA #8901' },
+    // Camp-003 (Morning Routine): 18 redemptions - show 5 sample
+    { id: 'redeem-011', couponAssignmentId: 'assign-003', campaignId: 'camp-003', influencerId: 'inf-003', serializedGs1: '811200850012345888001', redeemedAt: new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString(), retailerLocation: 'Fresh Market - Nashville, TN #1111' },
+    { id: 'redeem-012', couponAssignmentId: 'assign-003', campaignId: 'camp-003', influencerId: 'inf-004', serializedGs1: '811200850012345888002', redeemedAt: new Date(Date.now() - 12 * 60 * 60 * 1000).toISOString(), retailerLocation: 'Fresh Market - Charlotte, NC #2222' },
+    { id: 'redeem-013', couponAssignmentId: 'assign-003', campaignId: 'camp-003', influencerId: 'inf-003', serializedGs1: '811200850012345888003', redeemedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(), retailerLocation: 'Fresh Market - Raleigh, NC #3333' },
+    { id: 'redeem-014', couponAssignmentId: 'assign-003', campaignId: 'camp-003', influencerId: 'inf-004', serializedGs1: '811200850012345888004', redeemedAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(), retailerLocation: 'Fresh Market - Tampa, FL #4444' },
+    { id: 'redeem-015', couponAssignmentId: 'assign-003', campaignId: 'camp-003', influencerId: 'inf-003', serializedGs1: '811200850012345888005', redeemedAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(), retailerLocation: 'Fresh Market - Orlando, FL #5555' }
+];
 
 // Counter for generating unique IDs
 let assignmentCounter = 100;

@@ -95,6 +95,33 @@ Retailfluencer bridges the gap between influencer marketing and physical retail 
 
 ---
 
+## 🚀 Deployment
+
+### Cloudflare Pages
+
+1. **Build the project**
+   ```bash
+   npm run build
+   ```
+
+2. **Deploy to Cloudflare Pages**
+   ```bash
+   npx wrangler pages deploy .svelte-kit/cloudflare --project-name=retailfluencer
+   ```
+
+3. **Or deploy in one command**
+   ```bash
+   npm run build && npx wrangler pages deploy .svelte-kit/cloudflare --project-name=retailfluencer
+   ```
+
+### Environment Setup
+
+- Ensure `wrangler.toml` is configured with your project settings
+- The app uses static mock data for demo (no database required for deployment)
+- Production URL: https://retailfluencer.pages.dev
+
+---
+
 ## 🧪 Testing
 
 - **Simulate Redemption:** Use the Admin API to simulate a POS scan event.
