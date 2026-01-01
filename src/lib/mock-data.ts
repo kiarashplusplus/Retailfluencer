@@ -11,32 +11,87 @@ export const mockBrand = {
 };
 
 export const mockRetailers = [
-    { id: 'ret-001', name: 'Target', slug: 'target', logoUrl: '/images/retailers/target.png', supports8112: true, _count: { campaigns: 1, redemptions: 4 } },
+    { id: 'ret-001', name: 'Target', slug: 'target', logoUrl: '/images/retailers/target.png', supports8112: true, _count: { campaigns: 1, redemptions: 22 } },
     { id: 'ret-002', name: 'Walmart', slug: 'walmart', logoUrl: '/images/retailers/walmart.png', supports8112: true, _count: { campaigns: 0, redemptions: 0 } },
-    { id: 'ret-003', name: 'Whole Foods Market', slug: 'whole-foods', logoUrl: '/images/retailers/whole-foods.png', supports8112: true, _count: { campaigns: 1, redemptions: 5 } },
-    { id: 'ret-004', name: 'The Fresh Market', slug: 'the-fresh-market', logoUrl: '/images/retailers/fresh-market.png', supports8112: true, _count: { campaigns: 1, redemptions: 3 } },
+    { id: 'ret-003', name: 'Whole Foods Market', slug: 'whole-foods', logoUrl: '/images/retailers/whole-foods.png', supports8112: true, _count: { campaigns: 1, redemptions: 27 } },
+    { id: 'ret-004', name: 'The Fresh Market', slug: 'the-fresh-market', logoUrl: '/images/retailers/fresh-market.png', supports8112: true, _count: { campaigns: 1, redemptions: 18 } },
     { id: 'ret-005', name: 'Green Earth Grocers', slug: 'green-earth', logoUrl: '/images/retailers/green-earth.png', supports8112: true, _count: { campaigns: 0, redemptions: 0 } },
     { id: 'ret-006', name: 'City Market', slug: 'city-market', logoUrl: '/images/retailers/city-market.png', supports8112: true, _count: { campaigns: 0, redemptions: 0 } }
 ];
 
 export const mockProducts = [
-    { id: 'prod-001', brandId: 'demo-brand-001', name: 'Organic Kombucha (Ginger)', retailPrice: 4.99, cogs: 1.50, sku: 'KOM-GIN-001', gtin: '00850012345678', imageUrl: '/images/products/kombucha.png', brand: { name: 'HealthyLife Organics', slug: 'healthylife-organics' } },
-    { id: 'prod-002', brandId: 'demo-brand-001', name: 'Plant Protein Bar (Chocolate)', retailPrice: 2.99, cogs: 0.80, sku: 'PRO-CHO-001', gtin: '00850012345999', imageUrl: '/images/products/protein-bar.png', brand: { name: 'HealthyLife Organics', slug: 'healthylife-organics' } },
-    { id: 'prod-003', brandId: 'demo-brand-001', name: 'Oat Milk (Barista Edition)', retailPrice: 5.49, cogs: 2.10, sku: 'OAT-BAR-001', gtin: '00850012345888', imageUrl: '/images/products/oat-milk.png', brand: { name: 'HealthyLife Organics', slug: 'healthylife-organics' } }
+    {
+        id: 'prod-001',
+        brandId: 'demo-brand-001',
+        name: 'Organic Kombucha (Ginger)',
+        retailPrice: 4.99,
+        cogs: 1.50,
+        sku: 'KOM-GIN-001',
+        gtin: '00850012345678',
+        imageUrl: '/images/products/kombucha.png',
+        brand: { name: 'HealthyLife Organics', slug: 'healthylife-organics' },
+        retailers: [{ id: 'ret-003', name: 'Whole Foods Market', logoUrl: '/images/retailers/whole-foods.png' }],
+        influencers: [
+            { id: 'inf-001', name: 'Sarah Fit', instagramHandle: 'sarahfit', totalRedemptions: 15 },
+            { id: 'inf-002', name: 'Mike Foodie', tiktokHandle: 'mike_eats', totalRedemptions: 12 }
+        ]
+    },
+    {
+        id: 'prod-002',
+        brandId: 'demo-brand-001',
+        name: 'Plant Protein Bar (Chocolate)',
+        retailPrice: 2.99,
+        cogs: 0.80,
+        sku: 'PRO-CHO-001',
+        gtin: '00850012345999',
+        imageUrl: '/images/products/protein-bar.png',
+        brand: { name: 'HealthyLife Organics', slug: 'healthylife-organics' },
+        retailers: [{ id: 'ret-001', name: 'Target', logoUrl: '/images/retailers/target.png' }],
+        influencers: [
+            { id: 'inf-002', name: 'Mike Foodie', tiktokHandle: 'mike_eats', totalRedemptions: 12 },
+            { id: 'inf-003', name: 'Jessica Wellness', instagramHandle: 'jess_wellness', totalRedemptions: 10 }
+        ]
+    },
+    {
+        id: 'prod-003',
+        brandId: 'demo-brand-001',
+        name: 'Oat Milk (Barista Edition)',
+        retailPrice: 5.49,
+        cogs: 2.10,
+        sku: 'OAT-BAR-001',
+        gtin: '00850012345888',
+        imageUrl: '/images/products/oat-milk.png',
+        brand: { name: 'HealthyLife Organics', slug: 'healthylife-organics' },
+        retailers: [{ id: 'ret-004', name: 'The Fresh Market', logoUrl: '/images/retailers/fresh-market.png' }],
+        influencers: [
+            { id: 'inf-003', name: 'Jessica Wellness', instagramHandle: 'jess_wellness', totalRedemptions: 8 },
+            { id: 'inf-004', name: 'Alex Runner', instagramHandle: 'alexruns', totalRedemptions: 10 }
+        ]
+    }
 ];
+
 
 export const mockInfluencers = [
-    { id: 'inf-001', brandId: 'demo-brand-001', name: 'Sarah Fit', email: 'sarah@example.com', instagramHandle: 'sarahfit', tiktokHandle: null, totalRedemptions: 15, brand: { name: 'HealthyLife Organics', slug: 'healthylife-organics' }, _count: { couponAssignments: 2, redemptions: 15 } },
-    { id: 'inf-002', brandId: 'demo-brand-001', name: 'Mike Foodie', email: 'mike@example.com', instagramHandle: null, tiktokHandle: 'mike_eats', totalRedemptions: 22, brand: { name: 'HealthyLife Organics', slug: 'healthylife-organics' }, _count: { couponAssignments: 2, redemptions: 22 } },
-    { id: 'inf-003', brandId: 'demo-brand-001', name: 'Jessica Wellness', email: 'jessica@example.com', instagramHandle: 'jess_wellness', tiktokHandle: 'jessw', totalRedemptions: 18, brand: { name: 'HealthyLife Organics', slug: 'healthylife-organics' }, _count: { couponAssignments: 1, redemptions: 18 } },
-    { id: 'inf-004', brandId: 'demo-brand-001', name: 'Alex Runner', email: 'alex@example.com', instagramHandle: 'alexruns', tiktokHandle: null, totalRedemptions: 12, brand: { name: 'HealthyLife Organics', slug: 'healthylife-organics' }, _count: { couponAssignments: 1, redemptions: 12 } }
+    // Sarah Fit: 15 sales on Kombucha
+    { id: 'inf-001', brandId: 'demo-brand-001', name: 'Sarah Fit', email: 'sarah@example.com', instagramHandle: 'sarahfit', tiktokHandle: null, totalRedemptions: 15, brand: { name: 'HealthyLife Organics', slug: 'healthylife-organics' }, _count: { couponAssignments: 1, redemptions: 15 } },
+    // Mike Foodie: 12 Kombucha + 12 Protein Bar = 24 total
+    { id: 'inf-002', brandId: 'demo-brand-001', name: 'Mike Foodie', email: 'mike@example.com', instagramHandle: null, tiktokHandle: 'mike_eats', totalRedemptions: 24, brand: { name: 'HealthyLife Organics', slug: 'healthylife-organics' }, _count: { couponAssignments: 2, redemptions: 24 } },
+    // Jessica Wellness: 10 Protein Bar + 8 Oat Milk = 18 total
+    { id: 'inf-003', brandId: 'demo-brand-001', name: 'Jessica Wellness', email: 'jessica@example.com', instagramHandle: 'jess_wellness', tiktokHandle: 'jessw', totalRedemptions: 18, brand: { name: 'HealthyLife Organics', slug: 'healthylife-organics' }, _count: { couponAssignments: 2, redemptions: 18 } },
+    // Alex Runner: 10 Oat Milk
+    { id: 'inf-004', brandId: 'demo-brand-001', name: 'Alex Runner', email: 'alex@example.com', instagramHandle: 'alexruns', tiktokHandle: null, totalRedemptions: 10, brand: { name: 'HealthyLife Organics', slug: 'healthylife-organics' }, _count: { couponAssignments: 1, redemptions: 10 } }
 ];
+// Total: 15 + 24 + 18 + 10 = 67 ✓
 
 export const mockCampaigns = [
-    { id: 'camp-001', brandId: 'demo-brand-001', productId: 'prod-001', retailerId: 'ret-003', name: 'Summer Hydration', discountType: 'fixed', discountValue: 1.00, status: 'active', campaignStart: new Date().toISOString(), campaignEnd: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString(), totalCirculation: 1000, product: { id: 'prod-001', name: 'Organic Kombucha (Ginger)' }, retailer: { id: 'ret-003', name: 'Whole Foods Market' }, _count: { couponAssignments: 2, redemptions: 5 } },
-    { id: 'camp-002', brandId: 'demo-brand-001', productId: 'prod-002', retailerId: 'ret-001', name: 'Back to School Snack', discountType: 'percent', discountValue: 20, status: 'active', campaignStart: new Date().toISOString(), campaignEnd: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString(), totalCirculation: 1000, product: { id: 'prod-002', name: 'Plant Protein Bar (Chocolate)' }, retailer: { id: 'ret-001', name: 'Target' }, _count: { couponAssignments: 2, redemptions: 4 } },
-    { id: 'camp-003', brandId: 'demo-brand-001', productId: 'prod-003', retailerId: 'ret-004', name: 'Morning Routine', discountType: 'bogo', discountValue: 0, status: 'active', campaignStart: new Date().toISOString(), campaignEnd: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString(), totalCirculation: 1000, product: { id: 'prod-003', name: 'Oat Milk (Barista Edition)' }, retailer: { id: 'ret-004', name: 'The Fresh Market' }, _count: { couponAssignments: 2, redemptions: 3 } }
+    // Summer Hydration: Kombucha at Whole Foods = 27 redemptions
+    { id: 'camp-001', brandId: 'demo-brand-001', productId: 'prod-001', retailerId: 'ret-003', name: 'Summer Hydration', discountType: 'fixed', discountValue: 1.00, status: 'active', campaignStart: new Date().toISOString(), campaignEnd: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString(), totalCirculation: 1000, product: { id: 'prod-001', name: 'Organic Kombucha (Ginger)', retailPrice: 4.99 }, retailer: { id: 'ret-003', name: 'Whole Foods Market' }, _count: { couponAssignments: 2, redemptions: 27 } },
+    // Back to School Snack: Protein Bar at Target = 22 redemptions
+    { id: 'camp-002', brandId: 'demo-brand-001', productId: 'prod-002', retailerId: 'ret-001', name: 'Back to School Snack', discountType: 'percent', discountValue: 20, status: 'active', campaignStart: new Date().toISOString(), campaignEnd: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString(), totalCirculation: 1000, product: { id: 'prod-002', name: 'Plant Protein Bar (Chocolate)', retailPrice: 2.99 }, retailer: { id: 'ret-001', name: 'Target' }, _count: { couponAssignments: 2, redemptions: 22 } },
+    // Morning Routine: Oat Milk at Fresh Market = 18 redemptions
+    { id: 'camp-003', brandId: 'demo-brand-001', productId: 'prod-003', retailerId: 'ret-004', name: 'Morning Routine', discountType: 'bogo', discountValue: 0, status: 'active', campaignStart: new Date().toISOString(), campaignEnd: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString(), totalCirculation: 1000, product: { id: 'prod-003', name: 'Oat Milk (Barista Edition)', retailPrice: 5.49 }, retailer: { id: 'ret-004', name: 'The Fresh Market' }, _count: { couponAssignments: 2, redemptions: 18 } }
 ];
+// Total: 27 + 22 + 18 = 67 ✓
 
 export const mockCustomers = [
     { id: 'cust-001', brandId: 'demo-brand-001', email: 'customer1@gmail.com', totalRedemptions: 3, isAffiliate: false, affiliate: null, _count: { redemptions: 3 } },
@@ -44,10 +99,17 @@ export const mockCustomers = [
     { id: 'cust-003', brandId: 'demo-brand-001', email: 'superfan@gmail.com', totalRedemptions: 12, isAffiliate: true, affiliate: { code: 'SUPERFAN10', commissionPercent: 10 }, _count: { redemptions: 12 } }
 ];
 
+// Revenue calculation:
+// Kombucha ($4.99) × 27 = $134.73
+// Protein Bar ($2.99) × 22 = $65.78
+// Oat Milk ($5.49) × 18 = $98.82
+// Total Revenue: $299.33
 export const mockDashboardData = {
     totalRedemptions: 67,
     activeCampaigns: 3,
     totalInfluencers: 4,
+    totalProducts: 3,
+    revenue: 299.33,
     topInfluencers: mockInfluencers.map(i => ({
         id: i.id,
         name: i.name,
@@ -69,3 +131,4 @@ export const mockDashboardData = {
         _count: c._count
     }))
 };
+

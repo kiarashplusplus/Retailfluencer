@@ -25,21 +25,25 @@
   let isLoading = $state(true);
   let timeRange = $state<'7d' | '30d' | '90d'>('30d');
 
-  // Mock chart data
-  const redemptionTrend = [42, 55, 38, 72, 61, 88, 95, 78, 102, 89, 115, 125];
+  // Mock chart data - weekly redemptions for 12 weeks (totaling ~67 for most recent weeks)
+  const redemptionTrend = [3, 4, 5, 6, 8, 7, 5, 6, 7, 8, 4, 4]; // Each number represents weekly redemptions
+  
+  // Top Influencers - matching our mock data
   const topInfluencers = [
-    { name: 'Sarah Johnson', redemptions: 234, revenue: 4680 },
-    { name: 'Mike Chen', redemptions: 189, revenue: 3780 },
-    { name: 'Emma Davis', redemptions: 156, revenue: 3120 },
-    { name: 'Jake Wilson', redemptions: 142, revenue: 2840 },
-    { name: 'Lisa Rodriguez', redemptions: 128, revenue: 2560 },
+    { name: 'Mike Foodie', handle: '@mike_eats', redemptions: 24, revenue: 107.52 }, // 12×$4.99 + 12×$2.99
+    { name: 'Jessica Wellness', handle: '@jess_wellness', redemptions: 18, revenue: 72.82 }, // 10×$2.99 + 8×$5.49
+    { name: 'Sarah Fit', handle: '@sarahfit', redemptions: 15, revenue: 74.85 }, // 15×$4.99
+    { name: 'Alex Runner', handle: '@alexruns', redemptions: 10, revenue: 54.90 }, // 10×$5.49
   ];
+  // Total: 24 + 18 + 15 + 10 = 67 ✓
 
+  // Campaign Performance - matching our mock data
   const campaignPerformance = [
-    { name: 'Summer Sale 2024', redemptions: 456, target: 500, status: 'active' },
-    { name: 'Back to School', redemptions: 289, target: 400, status: 'active' },
-    { name: 'Holiday Promo', redemptions: 178, target: 300, status: 'draft' },
+    { name: 'Summer Hydration', product: 'Kombucha', retailer: 'Whole Foods', redemptions: 27, target: 100, status: 'active' },
+    { name: 'Back to School Snack', product: 'Protein Bar', retailer: 'Target', redemptions: 22, target: 100, status: 'active' },
+    { name: 'Morning Routine', product: 'Oat Milk', retailer: 'Fresh Market', redemptions: 18, target: 100, status: 'active' },
   ];
+  // Total: 27 + 22 + 18 = 67 ✓
 
   onMount(async () => {
     try {
@@ -164,7 +168,7 @@
             </span>
             <div class="influencer-info">
               <span class="name">{influencer.name}</span>
-              <span class="stats">{influencer.redemptions} redemptions</span>
+              <span class="stats">{influencer.handle} • {influencer.redemptions} sales</span>
             </div>
             <span class="revenue">${influencer.revenue.toLocaleString()}</span>
           </div>

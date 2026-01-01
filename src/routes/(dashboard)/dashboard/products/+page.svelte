@@ -15,6 +15,8 @@
     imageUrl: string | null;
     createdAt: string;
     brand?: { name: string };
+    retailers?: { id: string; name: string; logoUrl?: string }[];
+    influencers?: { id: string; name: string; instagramHandle?: string; tiktokHandle?: string; totalRedemptions: number }[];
   }
 
   let products = $state<Product[]>([]);
@@ -209,6 +211,41 @@
                     <Badge variant="purple">GTIN</Badge>
                   {/if}
                 </div>
+                
+                <!-- Retailers -->
+                {#if product.retailers && product.retailers.length > 0}
+                  <div class="product-section">
+                    <span class="section-label">Sold at</span>
+                    <div class="retailer-tags">
+                      {#each product.retailers as retailer}
+                        <span class="retailer-tag">
+                          <span class="retailer-name">{retailer.name}</span>
+                        </span>
+                      {/each}
+                    </div>
+                  </div>
+                {/if}
+                
+                <!-- Influencers -->
+                {#if product.influencers && product.influencers.length > 0}
+                  <div class="product-section">
+                    <span class="section-label">Influencers ({product.influencers.length})</span>
+                    <div class="influencer-list">
+                      {#each product.influencers as inf}
+                        <div class="influencer-chip">
+                          <span class="influencer-avatar">★</span>
+                          <div class="influencer-details">
+                            <span class="influencer-name">{inf.name}</span>
+                            <span class="influencer-handle">
+                              {inf.instagramHandle ? `@${inf.instagramHandle}` : inf.tiktokHandle ? `@${inf.tiktokHandle}` : ''}
+                            </span>
+                          </div>
+                          <span class="influencer-redemptions">{inf.totalRedemptions} sales</span>
+                        </div>
+                      {/each}
+                    </div>
+                  </div>
+                {/if}
               </div>
               <div class="product-actions">
                 <button class="action-btn" onclick={() => openEditModal(product)}>Edit</button>
@@ -421,6 +458,93 @@
     font-size: 1.125rem;
     font-weight: 600;
     color: #10b981;
+  }
+
+  .product-section {
+    margin-top: 1rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  .section-label {
+    font-size: 0.75rem;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    display: block;
+    margin-bottom: 0.5rem;
+  }
+
+  .retailer-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.375rem;
+  }
+
+  .retailer-tag {
+    padding: 0.25rem 0.625rem;
+    background: rgba(124, 58, 237, 0.15);
+    border: 1px solid rgba(124, 58, 237, 0.25);
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    color: #c4b5fd;
+  }
+
+  .influencer-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .influencer-chip {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 0.5rem;
+  }
+
+  .influencer-avatar {
+    width: 28px;
+    height: 28px;
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    color: #fff;
+  }
+
+  .influencer-details {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  .influencer-name {
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: #e5e7eb;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .influencer-handle {
+    font-size: 0.6875rem;
+    color: #6b7280;
+  }
+
+  .influencer-redemptions {
+    font-size: 0.6875rem;
+    color: #10b981;
+    background: rgba(16, 185, 129, 0.1);
+    padding: 0.125rem 0.5rem;
+    border-radius: 9999px;
+    white-space: nowrap;
   }
 
   .product-actions {
