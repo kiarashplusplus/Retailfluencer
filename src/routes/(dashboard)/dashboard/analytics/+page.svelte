@@ -259,6 +259,95 @@
         </div>
       </div>
     </Card>
+
+    <!-- Revenue by Product -->
+    <Card>
+      <div class="section-header">
+        <h3>Revenue by Product</h3>
+        <Badge variant="purple">All Time</Badge>
+      </div>
+      <div class="product-revenue-list">
+        <div class="product-revenue-row" in:fly={{ x: -20, delay: 400, duration: 400 }}>
+          <div class="product-icon" style="background: linear-gradient(135deg, #7c3aed, #a855f7);">🍵</div>
+          <div class="product-info">
+            <span class="product-name">Organic Kombucha (Ginger)</span>
+            <div class="revenue-bar-container">
+              <div class="revenue-bar" style="width: 65%"></div>
+            </div>
+          </div>
+          <span class="product-revenue">$134.73</span>
+        </div>
+        <div class="product-revenue-row" in:fly={{ x: -20, delay: 460, duration: 400 }}>
+          <div class="product-icon" style="background: linear-gradient(135deg, #f59e0b, #fbbf24);">🍫</div>
+          <div class="product-info">
+            <span class="product-name">Plant Protein Bar (Chocolate)</span>
+            <div class="revenue-bar-container">
+              <div class="revenue-bar" style="width: 40%"></div>
+            </div>
+          </div>
+          <span class="product-revenue">$65.78</span>
+        </div>
+        <div class="product-revenue-row" in:fly={{ x: -20, delay: 520, duration: 400 }}>
+          <div class="product-icon" style="background: linear-gradient(135deg, #10b981, #34d399);">🥛</div>
+          <div class="product-info">
+            <span class="product-name">Oat Milk (Barista Edition)</span>
+            <div class="revenue-bar-container">
+              <div class="revenue-bar" style="width: 48%"></div>
+            </div>
+          </div>
+          <span class="product-revenue">$98.82</span>
+        </div>
+      </div>
+    </Card>
+
+    <!-- Snowball Growth -->
+    <Card>
+      <div class="section-header">
+        <h3>Snowball Growth</h3>
+        <Badge variant="success">+12% MoM</Badge>
+      </div>
+      <div class="snowball-chart">
+        <div class="snowball-funnel">
+          <div class="funnel-stage" in:fly={{ y: 20, delay: 400, duration: 400 }}>
+            <div class="funnel-bar" style="width: 100%; background: linear-gradient(90deg, #3b82f6, #60a5fa);">
+              <span class="funnel-value">2.1K</span>
+            </div>
+            <span class="funnel-label">Emails Captured</span>
+          </div>
+          <div class="funnel-arrow">↓</div>
+          <div class="funnel-stage" in:fly={{ y: 20, delay: 500, duration: 400 }}>
+            <div class="funnel-bar" style="width: 75%; background: linear-gradient(90deg, #7c3aed, #a855f7);">
+              <span class="funnel-value">67</span>
+            </div>
+            <span class="funnel-label">Customers (Redeemed)</span>
+          </div>
+          <div class="funnel-arrow">↓</div>
+          <div class="funnel-stage" in:fly={{ y: 20, delay: 600, duration: 400 }}>
+            <div class="funnel-bar" style="width: 45%; background: linear-gradient(90deg, #10b981, #34d399);">
+              <span class="funnel-value">12</span>
+            </div>
+            <span class="funnel-label">Affiliates Converted</span>
+          </div>
+          <div class="funnel-arrow">↓</div>
+          <div class="funnel-stage" in:fly={{ y: 20, delay: 700, duration: 400 }}>
+            <div class="funnel-bar" style="width: 25%; background: linear-gradient(90deg, #f59e0b, #fbbf24);">
+              <span class="funnel-value">15</span>
+            </div>
+            <span class="funnel-label">Referral Sales</span>
+          </div>
+        </div>
+        <div class="snowball-stats">
+          <div class="snowball-stat">
+            <span class="snowball-value">18%</span>
+            <span class="snowball-label">Customer → Affiliate Rate</span>
+          </div>
+          <div class="snowball-stat">
+            <span class="snowball-value">1.25x</span>
+            <span class="snowball-label">Affiliate Multiplier</span>
+          </div>
+        </div>
+      </div>
+    </Card>
   </div>
 </div>
 
@@ -637,6 +726,143 @@
   @keyframes shimmer {
     0% { background-position: 200% 0; }
     100% { background-position: -200% 0; }
+  }
+
+  /* Revenue by Product Chart */
+  .product-revenue-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .product-revenue-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .product-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    flex-shrink: 0;
+  }
+
+  .product-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+  }
+
+  .product-name {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #fff;
+  }
+
+  .revenue-bar-container {
+    height: 6px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+
+  .revenue-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #7c3aed, #a855f7);
+    border-radius: 3px;
+    transition: width 0.5s ease;
+  }
+
+  .product-revenue {
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: #10b981;
+    min-width: 70px;
+    text-align: right;
+  }
+
+  /* Snowball Growth Chart */
+  .snowball-chart {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  .snowball-funnel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.375rem;
+  }
+
+  .funnel-stage {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .funnel-bar {
+    height: 32px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    padding: 0 0.75rem;
+    transition: width 0.5s ease;
+  }
+
+  .funnel-value {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #fff;
+  }
+
+  .funnel-label {
+    font-size: 0.75rem;
+    color: #6b7280;
+    min-width: 140px;
+    text-align: left;
+  }
+
+  .funnel-arrow {
+    color: #6b7280;
+    font-size: 0.75rem;
+    opacity: 0.5;
+  }
+
+  .snowball-stats {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .snowball-stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+  }
+
+  .snowball-value {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #10b981;
+  }
+
+  .snowball-label {
+    font-size: 0.6875rem;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    text-align: center;
   }
 
   @media (max-width: 1024px) {

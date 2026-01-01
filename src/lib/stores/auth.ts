@@ -13,7 +13,7 @@ export const DEMO_USER = {
 
 export const DEMO_CREDENTIALS = {
     email: 'demo@retailfluencer.com',
-    password: 'demo123',
+    password: 'Rf@2026Demo!',
 };
 
 export interface User {

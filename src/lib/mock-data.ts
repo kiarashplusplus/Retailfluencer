@@ -95,33 +95,33 @@ export const mockCampaigns = [
 
 export const mockCustomers = [
     // Heavy buyers (5+ redemptions each) = 36 total
-    { id: 'cust-001', brandId: 'demo-brand-001', email: 'superfan@gmail.com', name: 'Emily Roberts', totalRedemptions: 12, isAffiliate: true, affiliate: { code: 'SUPERFAN10', commissionPercent: 10 }, _count: { redemptions: 12 } },
-    { id: 'cust-002', brandId: 'demo-brand-001', email: 'healthnut@gmail.com', name: 'Marcus Chen', totalRedemptions: 8, isAffiliate: false, affiliate: null, _count: { redemptions: 8 } },
-    { id: 'cust-003', brandId: 'demo-brand-001', email: 'fitlife@yahoo.com', name: 'Sarah Kim', totalRedemptions: 6, isAffiliate: false, affiliate: null, _count: { redemptions: 6 } },
-    { id: 'cust-004', brandId: 'demo-brand-001', email: 'organic.lover@gmail.com', name: 'James Wilson', totalRedemptions: 5, isAffiliate: true, affiliate: { code: 'JAMES5', commissionPercent: 5 }, _count: { redemptions: 5 } },
-    { id: 'cust-005', brandId: 'demo-brand-001', email: 'wellness.daily@outlook.com', name: 'Lisa Park', totalRedemptions: 5, isAffiliate: false, affiliate: null, _count: { redemptions: 5 } },
+    { id: 'cust-001', brandId: 'demo-brand-001', email: 'superfan@gmail.com', name: 'Emily Roberts', totalRedemptions: 12, isAffiliate: true, affiliate: { code: 'SUPERFAN10', commissionPercent: 10 }, _count: { redemptions: 12 }, createdAt: '2025-08-15T10:30:00Z' },
+    { id: 'cust-002', brandId: 'demo-brand-001', email: 'healthnut@gmail.com', name: 'Marcus Chen', totalRedemptions: 8, isAffiliate: false, affiliate: null, _count: { redemptions: 8 }, createdAt: '2025-09-02T14:22:00Z' },
+    { id: 'cust-003', brandId: 'demo-brand-001', email: 'fitlife@yahoo.com', name: 'Sarah Kim', totalRedemptions: 6, isAffiliate: false, affiliate: null, _count: { redemptions: 6 }, createdAt: '2025-09-10T09:15:00Z' },
+    { id: 'cust-004', brandId: 'demo-brand-001', email: 'organic.lover@gmail.com', name: 'James Wilson', totalRedemptions: 5, isAffiliate: true, affiliate: { code: 'JAMES5', commissionPercent: 5 }, _count: { redemptions: 5 }, createdAt: '2025-09-18T16:45:00Z' },
+    { id: 'cust-005', brandId: 'demo-brand-001', email: 'wellness.daily@outlook.com', name: 'Lisa Park', totalRedemptions: 5, isAffiliate: false, affiliate: null, _count: { redemptions: 5 }, createdAt: '2025-09-25T11:00:00Z' },
     // Regular buyers (2-4 redemptions) = 18 total
-    { id: 'cust-006', brandId: 'demo-brand-001', email: 'mike.fitness@gmail.com', name: 'Mike Thompson', totalRedemptions: 4, isAffiliate: false, affiliate: null, _count: { redemptions: 4 } },
-    { id: 'cust-007', brandId: 'demo-brand-001', email: 'anna.health@gmail.com', name: 'Anna Martinez', totalRedemptions: 3, isAffiliate: false, affiliate: null, _count: { redemptions: 3 } },
-    { id: 'cust-008', brandId: 'demo-brand-001', email: 'david.green@yahoo.com', name: 'David Green', totalRedemptions: 3, isAffiliate: false, affiliate: null, _count: { redemptions: 3 } },
-    { id: 'cust-009', brandId: 'demo-brand-001', email: 'jen.active@gmail.com', name: 'Jennifer Lee', totalRedemptions: 2, isAffiliate: false, affiliate: null, _count: { redemptions: 2 } },
-    { id: 'cust-010', brandId: 'demo-brand-001', email: 'tom.runner@outlook.com', name: 'Tom Baker', totalRedemptions: 2, isAffiliate: false, affiliate: null, _count: { redemptions: 2 } },
-    { id: 'cust-011', brandId: 'demo-brand-001', email: 'kate.yoga@gmail.com', name: 'Kate Johnson', totalRedemptions: 2, isAffiliate: false, affiliate: null, _count: { redemptions: 2 } },
-    { id: 'cust-012', brandId: 'demo-brand-001', email: 'chris.vegan@yahoo.com', name: 'Chris Anderson', totalRedemptions: 2, isAffiliate: false, affiliate: null, _count: { redemptions: 2 } },
+    { id: 'cust-006', brandId: 'demo-brand-001', email: 'mike.fitness@gmail.com', name: 'Mike Thompson', totalRedemptions: 4, isAffiliate: false, affiliate: null, _count: { redemptions: 4 }, createdAt: '2025-10-01T08:30:00Z' },
+    { id: 'cust-007', brandId: 'demo-brand-001', email: 'anna.health@gmail.com', name: 'Anna Martinez', totalRedemptions: 3, isAffiliate: false, affiliate: null, _count: { redemptions: 3 }, createdAt: '2025-10-05T13:20:00Z' },
+    { id: 'cust-008', brandId: 'demo-brand-001', email: 'david.green@yahoo.com', name: 'David Green', totalRedemptions: 3, isAffiliate: false, affiliate: null, _count: { redemptions: 3 }, createdAt: '2025-10-12T15:45:00Z' },
+    { id: 'cust-009', brandId: 'demo-brand-001', email: 'jen.active@gmail.com', name: 'Jennifer Lee', totalRedemptions: 2, isAffiliate: false, affiliate: null, _count: { redemptions: 2 }, createdAt: '2025-10-18T10:10:00Z' },
+    { id: 'cust-010', brandId: 'demo-brand-001', email: 'tom.runner@outlook.com', name: 'Tom Baker', totalRedemptions: 2, isAffiliate: false, affiliate: null, _count: { redemptions: 2 }, createdAt: '2025-10-22T17:30:00Z' },
+    { id: 'cust-011', brandId: 'demo-brand-001', email: 'kate.yoga@gmail.com', name: 'Kate Johnson', totalRedemptions: 2, isAffiliate: false, affiliate: null, _count: { redemptions: 2 }, createdAt: '2025-10-28T12:00:00Z' },
+    { id: 'cust-012', brandId: 'demo-brand-001', email: 'chris.vegan@yahoo.com', name: 'Chris Anderson', totalRedemptions: 2, isAffiliate: false, affiliate: null, _count: { redemptions: 2 }, createdAt: '2025-11-03T09:45:00Z' },
     // One-time buyers (1 redemption each)
-    { id: 'cust-013', brandId: 'demo-brand-001', email: 'alex.newbie@gmail.com', name: 'Alex Brown', totalRedemptions: 1, isAffiliate: false, affiliate: null, _count: { redemptions: 1 } },
-    { id: 'cust-014', brandId: 'demo-brand-001', email: 'sam.curious@outlook.com', name: 'Sam Garcia', totalRedemptions: 1, isAffiliate: false, affiliate: null, _count: { redemptions: 1 } },
-    { id: 'cust-015', brandId: 'demo-brand-001', email: 'jordan.first@gmail.com', name: 'Jordan Taylor', totalRedemptions: 1, isAffiliate: false, affiliate: null, _count: { redemptions: 1 } },
-    { id: 'cust-016', brandId: 'demo-brand-001', email: 'pat.try@yahoo.com', name: 'Pat Davis', totalRedemptions: 1, isAffiliate: false, affiliate: null, _count: { redemptions: 1 } },
-    { id: 'cust-017', brandId: 'demo-brand-001', email: 'morgan.test@gmail.com', name: 'Morgan White', totalRedemptions: 1, isAffiliate: false, affiliate: null, _count: { redemptions: 1 } },
-    { id: 'cust-018', brandId: 'demo-brand-001', email: 'casey.once@outlook.com', name: 'Casey Miller', totalRedemptions: 1, isAffiliate: false, affiliate: null, _count: { redemptions: 1 } },
-    { id: 'cust-019', brandId: 'demo-brand-001', email: 'riley.new@gmail.com', name: 'Riley Moore', totalRedemptions: 1, isAffiliate: false, affiliate: null, _count: { redemptions: 1 } },
-    { id: 'cust-020', brandId: 'demo-brand-001', email: 'drew.sample@yahoo.com', name: 'Drew Clark', totalRedemptions: 1, isAffiliate: false, affiliate: null, _count: { redemptions: 1 } },
-    { id: 'cust-021', brandId: 'demo-brand-001', email: 'quinn.trial@gmail.com', name: 'Quinn Lewis', totalRedemptions: 1, isAffiliate: false, affiliate: null, _count: { redemptions: 1 } },
-    { id: 'cust-022', brandId: 'demo-brand-001', email: 'avery.new@outlook.com', name: 'Avery Hall', totalRedemptions: 1, isAffiliate: false, affiliate: null, _count: { redemptions: 1 } },
-    { id: 'cust-023', brandId: 'demo-brand-001', email: 'skyler.test@gmail.com', name: 'Skyler Young', totalRedemptions: 1, isAffiliate: false, affiliate: null, _count: { redemptions: 1 } },
-    { id: 'cust-024', brandId: 'demo-brand-001', email: 'peyton.first@yahoo.com', name: 'Peyton Allen', totalRedemptions: 1, isAffiliate: false, affiliate: null, _count: { redemptions: 1 } },
-    { id: 'cust-025', brandId: 'demo-brand-001', email: 'jamie.try@gmail.com', name: 'Jamie King', totalRedemptions: 1, isAffiliate: false, affiliate: null, _count: { redemptions: 1 } }
+    { id: 'cust-013', brandId: 'demo-brand-001', email: 'alex.newbie@gmail.com', name: 'Alex Brown', totalRedemptions: 1, isAffiliate: false, affiliate: null, _count: { redemptions: 1 }, createdAt: '2025-11-10T14:30:00Z' },
+    { id: 'cust-014', brandId: 'demo-brand-001', email: 'sam.curious@outlook.com', name: 'Sam Garcia', totalRedemptions: 1, isAffiliate: false, affiliate: null, _count: { redemptions: 1 }, createdAt: '2025-11-15T11:15:00Z' },
+    { id: 'cust-015', brandId: 'demo-brand-001', email: 'jordan.first@gmail.com', name: 'Jordan Taylor', totalRedemptions: 1, isAffiliate: false, affiliate: null, _count: { redemptions: 1 }, createdAt: '2025-11-20T16:00:00Z' },
+    { id: 'cust-016', brandId: 'demo-brand-001', email: 'pat.try@yahoo.com', name: 'Pat Davis', totalRedemptions: 1, isAffiliate: false, affiliate: null, _count: { redemptions: 1 }, createdAt: '2025-11-25T10:45:00Z' },
+    { id: 'cust-017', brandId: 'demo-brand-001', email: 'morgan.test@gmail.com', name: 'Morgan White', totalRedemptions: 1, isAffiliate: false, affiliate: null, _count: { redemptions: 1 }, createdAt: '2025-12-01T13:30:00Z' },
+    { id: 'cust-018', brandId: 'demo-brand-001', email: 'casey.once@outlook.com', name: 'Casey Miller', totalRedemptions: 1, isAffiliate: false, affiliate: null, _count: { redemptions: 1 }, createdAt: '2025-12-05T08:20:00Z' },
+    { id: 'cust-019', brandId: 'demo-brand-001', email: 'riley.new@gmail.com', name: 'Riley Moore', totalRedemptions: 1, isAffiliate: false, affiliate: null, _count: { redemptions: 1 }, createdAt: '2025-12-10T15:50:00Z' },
+    { id: 'cust-020', brandId: 'demo-brand-001', email: 'drew.sample@yahoo.com', name: 'Drew Clark', totalRedemptions: 1, isAffiliate: false, affiliate: null, _count: { redemptions: 1 }, createdAt: '2025-12-15T11:40:00Z' },
+    { id: 'cust-021', brandId: 'demo-brand-001', email: 'quinn.trial@gmail.com', name: 'Quinn Lewis', totalRedemptions: 1, isAffiliate: false, affiliate: null, _count: { redemptions: 1 }, createdAt: '2025-12-18T14:15:00Z' },
+    { id: 'cust-022', brandId: 'demo-brand-001', email: 'avery.new@outlook.com', name: 'Avery Hall', totalRedemptions: 1, isAffiliate: false, affiliate: null, _count: { redemptions: 1 }, createdAt: '2025-12-22T09:30:00Z' },
+    { id: 'cust-023', brandId: 'demo-brand-001', email: 'skyler.test@gmail.com', name: 'Skyler Young', totalRedemptions: 1, isAffiliate: false, affiliate: null, _count: { redemptions: 1 }, createdAt: '2025-12-25T12:00:00Z' },
+    { id: 'cust-024', brandId: 'demo-brand-001', email: 'peyton.first@yahoo.com', name: 'Peyton Allen', totalRedemptions: 1, isAffiliate: false, affiliate: null, _count: { redemptions: 1 }, createdAt: '2025-12-28T16:30:00Z' },
+    { id: 'cust-025', brandId: 'demo-brand-001', email: 'jamie.try@gmail.com', name: 'Jamie King', totalRedemptions: 1, isAffiliate: false, affiliate: null, _count: { redemptions: 1 }, createdAt: '2025-12-30T10:00:00Z' }
 ];
 // Customer redemptions: 12+8+6+5+5 = 36; 3+3+3+2+2+2+2 = 17; 13×1 = 13; + 1 more = 67
 // Total: 36 + 17 + 13 + 1 = 67 ✓ (cust-006 has 4 instead of 3)
