@@ -2,6 +2,7 @@
   import { onMount } from 'svelte';
   import { fly, fade } from 'svelte/transition';
   import { Card, Button, Input, Modal, Badge, EmptyState } from '$lib/components/ui';
+  import CampaignBuilder from '$lib/components/CampaignBuilder.svelte';
   import { page } from '$app/stores';
   import { user } from '$lib/stores/auth';
 
@@ -218,16 +219,13 @@
 </div>
 
 <Modal bind:open={showModal} title="Create New Campaign" size="lg">
-  <div class="wizard-placeholder">
-    <div class="placeholder-icon">🚀</div>
-    <h3>Campaign Builder</h3>
-    <p>Multi-step campaign creation wizard coming soon.</p>
-    <p class="placeholder-hint">For now, campaigns can be created via the API.</p>
-  </div>
-
-  {#snippet footer()}
-    <Button variant="secondary" onclick={() => showModal = false}>Close</Button>
-  {/snippet}
+  <CampaignBuilder 
+    onclose={() => showModal = false}
+    oncreate={(campaign) => {
+      campaigns = [campaign, ...campaigns];
+      showModal = false;
+    }}
+  />
 </Modal>
 
 <style>
