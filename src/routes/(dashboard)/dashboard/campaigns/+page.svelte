@@ -149,8 +149,9 @@
     <div class="campaigns-list">
       {#each filteredCampaigns as campaign, i}
         <div in:fly={{ y: 20, delay: i * 60, duration: 300 }}>
-          <Card hover padding="none">
-            <div class="campaign-card">
+          <a href="/dashboard/campaigns/{campaign.id}" class="campaign-link">
+            <Card hover padding="none">
+              <div class="campaign-card">
               <div class="campaign-header">
                 <Badge variant={getStatusVariant(campaign.status)} dot>
                   {campaign.status.charAt(0).toUpperCase() + campaign.status.slice(1)}
@@ -206,13 +207,12 @@
               {/if}
 
               <div class="campaign-actions">
-                <button class="action-link">View Details</button>
-                <button class="action-link">Add Influencers</button>
-                <button class="action-link">Analytics</button>
+                <span class="action-link">View Details →</span>
               </div>
             </div>
           </Card>
-        </div>
+        </a>
+      </div>
       {/each}
     </div>
   {/if}
@@ -439,6 +439,18 @@
   .action-link:hover {
     background: rgba(255, 255, 255, 0.05);
     color: #fff;
+  }
+
+  .action-link:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: #fff;
+  }
+
+  .campaign-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    height: 100%;
   }
 
   /* Wizard placeholder */

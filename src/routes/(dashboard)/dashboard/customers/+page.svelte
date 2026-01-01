@@ -83,37 +83,39 @@
     <div class="list">
       {#each customers as customer, i}
         <div in:fly={{ x: -20, delay: i * 50, duration: 300 }}>
-          <Card hover>
-            <div class="customer-row">
-              <div class="customer-avatar">
-                {customer.email?.charAt(0).toUpperCase() || 'C'}
-              </div>
+          <a href="/dashboard/customers/{customer.id}" class="customer-link">
+            <Card hover>
+              <div class="customer-row">
+                <div class="customer-avatar">
+                  {customer.email?.charAt(0).toUpperCase() || 'C'}
+                </div>
 
-              <div class="customer-info">
-                <div class="customer-header">
-                  <span class="customer-email">{customer.email || 'No email provided'}</span>
-                  {#if customer.isAffiliate}
-                    <Badge variant="purple">Affiliate</Badge>
+                <div class="customer-info">
+                  <div class="customer-header">
+                    <span class="customer-email">{customer.email || 'No email provided'}</span>
+                    {#if customer.isAffiliate}
+                      <Badge variant="purple">Affiliate</Badge>
+                    {/if}
+                  </div>
+                  {#if customer.phone}
+                    <span class="customer-phone">{customer.phone}</span>
                   {/if}
                 </div>
-                {#if customer.phone}
-                  <span class="customer-phone">{customer.phone}</span>
-                {/if}
-              </div>
 
-              <div class="customer-stats">
-                <div class="stat">
-                  <span class="stat-value">{customer._count.redemptions}</span>
-                  <span class="stat-label">Redemptions</span>
+                <div class="customer-stats">
+                  <div class="stat">
+                    <span class="stat-value">{customer._count.redemptions}</span>
+                    <span class="stat-label">Redemptions</span>
+                  </div>
+                </div>
+
+                <div class="customer-date">
+                  <span class="date-label">Joined</span>
+                  <span class="date-value">{formatDate(customer.createdAt)}</span>
                 </div>
               </div>
-
-              <div class="customer-date">
-                <span class="date-label">Joined</span>
-                <span class="date-value">{formatDate(customer.createdAt)}</span>
-              </div>
-            </div>
-          </Card>
+            </Card>
+          </a>
         </div>
       {/each}
     </div>
@@ -258,5 +260,12 @@
   @keyframes shimmer {
     0% { background-position: 200% 0; }
     100% { background-position: -200% 0; }
+  }
+
+  .customer-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    height: 100%;
   }
 </style>
